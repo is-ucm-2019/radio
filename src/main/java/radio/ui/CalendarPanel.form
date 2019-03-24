@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="radio.ui.CalendarPanel">
+  <grid id="27dc6" binding="calendarPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <scrollpane id="c742b" binding="holderPane">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="785c8" class="javax.swing.JTable" binding="calendarTable">
+            <constraints/>
+            <properties>
+              <enabled value="false"/>
+              <fillsViewportHeight value="false"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <grid id="87ea8" binding="buttonsPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="North"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="c2e3c" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints border-constraint="Center"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="280fa" class="javax.swing.JLabel" binding="currentWeekLabel">
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <horizontalAlignment value="2"/>
+                  <text value="Label"/>
+                  <toolTipText value="Current Month"/>
+                </properties>
+              </component>
+              <grid id="e990a" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+                <constraints border-constraint="East"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="8dd" class="javax.swing.JButton" binding="prevWeek">
+                    <constraints/>
+                    <properties>
+                      <text value="←"/>
+                      <toolTipText value="Go to previous week"/>
+                    </properties>
+                  </component>
+                  <component id="84426" class="javax.swing.JButton" binding="todayButton" default-binding="true">
+                    <constraints/>
+                    <properties>
+                      <text value="Today"/>
+                      <toolTipText value="Go to current week"/>
+                    </properties>
+                  </component>
+                  <component id="ed41" class="javax.swing.JButton" binding="nextWeek">
+                    <constraints/>
+                    <properties>
+                      <text value="→"/>
+                      <toolTipText value="Go to next week"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
