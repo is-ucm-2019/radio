@@ -1,20 +1,10 @@
 package radio.core;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class Program {
     private String title;
-
-    public String getDescription() {
-        return description;
-    }
-
     private String description;
-
-    public Color getColor() {
-        return color;
-    }
-
     private Color color;
 
     public Program(String title, String description, Color color) {
@@ -25,5 +15,13 @@ public class Program {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }
