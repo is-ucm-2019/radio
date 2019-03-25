@@ -3,13 +3,12 @@ package radio.ui;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import radio.actions.ShowProgramsAction;
+import radio.actions.UpdateProgramList;
 import radio.core.Program;
+import radio.transfer.ProgramTransfer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -79,11 +78,11 @@ public class ProgramListPanel implements ApplicationWindow, Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if (arg instanceof ShowProgramsAction) {
+        if (arg instanceof UpdateProgramList) {
             listModel.clear();
-            ShowProgramsAction showProgramsAction = (ShowProgramsAction) arg;
+            UpdateProgramList showProgramsAction = (UpdateProgramList) arg;
             int i = 0;
-            for (Program p : showProgramsAction.list) {
+            for (ProgramTransfer p : showProgramsAction.list) {
                 listModel.insertElementAt(p.title, i);
                 i++;
             }

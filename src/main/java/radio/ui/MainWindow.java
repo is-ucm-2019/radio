@@ -46,7 +46,7 @@ public class MainWindow {
         initUI();
     }
 
-    void show(final String message) {
+    void show(String message) {
         javax.swing.SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(holderFrame, message));
     }
 

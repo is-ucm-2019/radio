@@ -1,30 +1,24 @@
 package radio.core;
 
-import radio.actions.ShowProgramsAction;
+import radio.actions.UpdateProgramList;
 import radio.core.users.User;
+import radio.dao.ProgramDAO;
+import radio.transfer.ProgramTransfer;
 
-import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
 
 public class Core extends Observable {
     private Optional<User> currentUser = Optional.empty();
-
-    private Stock stock;
+    private ProgramDAO programDAO;
 
     public Core() {
-        stock = new Stock();
+        programDAO = new ProgramDAO();
     }
 
     public void dispatchObserver(Observer obs) {
         this.addObserver(obs);
-    }
-
-    public void dispatchObservers(Observer[] obs) {
-        for (Observer o: obs) {
-            this.addObserver(o);
-        }
     }
 
     // TODO(borja): Perform user validation
@@ -36,13 +30,15 @@ public class Core extends Observable {
         this.currentUser = Optional.empty();
     }
 
-    public void addProgram(String title, String description, Color color) {
-        Program p = new Program(title, description, color);
-        this.stock.addProgram(p);
-        ShowProgramsAction action = new ShowProgramsAction();
-        action.list = this.stock.programAsList();
+    public boolean programExists(ProgramTransfer tr) {
+        return this.programDAO.exists(tr);
+    }
 
+    // TODO(borja): Don't update with the entire list, only the last added
+    // TODO(borja): Show the user window to select advertisers
+    public void addProgram(ProgramTransfer tr) {
+        this.programDAO.persist(tr);
         this.setChanged();
-        this.notifyObservers(action);
+        this.notifyObservers(new UpdateProgramList(this.programDAO.loadAll()));
     }
 }

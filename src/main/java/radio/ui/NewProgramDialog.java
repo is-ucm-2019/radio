@@ -8,7 +8,7 @@ import javax.swing.*;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import java.awt.*;
 
-public class NewProgramDialog extends JDialog {
+public class NewProgramDialog extends JDialog implements ApplicationWindow {
 
     private JPanel contentPane;
     private JButton buttonOK;
@@ -26,12 +26,21 @@ public class NewProgramDialog extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-        buttonOK.addActionListener(e -> onOK(cont));
+        buttonOK.addActionListener(_e -> onOK(cont));
         buttonCancel.addActionListener(_e -> dispose());
     }
 
     private void onOK(PlanningController controller) {
-        controller.addProgramEvent(this.titleField.getText(), this.descriptionArea.getText(), colorChooser.getColor());
+        String title = this.titleField.getText();
+        String descr = this.descriptionArea.getText();
+        Color c = this.colorChooser.getColor();
+        if (title == null || title.isEmpty() || descr == null || c == null) {
+            show("Program title can't be empty!");
+            return;
+        }
+
+        // FIXME(borja): Figure out a way to keep the dialog open even if program exists
+        SwingUtilities.invokeLater(() -> controller.addProgramEvent(this.titleField.getText(), this.descriptionArea.getText(), colorChooser.getColor()));
         dispose();
     }
 
@@ -112,4 +121,8 @@ public class NewProgramDialog extends JDialog {
         return contentPane;
     }
 
+    @Override
+    public JPanel getPanelHandler() {
+        return (JPanel) this.$$$getRootComponent$$$();
+    }
 }

@@ -35,4 +35,8 @@ public class MainController {
     void addObserver(Observer o) {
         this.core.dispatchObserver(o);
     }
+
+    void showToUser(String message) {
+        this.frame.show(message);
+    }
 }
