@@ -5,18 +5,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MainWindow {
-    enum Panels {
-        LOGIN,
-        LANDING,
-        PLANNING,
-        EVENTS,
-        TICKETS,
-        ADVERTISERS,
-        MUSIC_ARCHIVE,
-        PLAYLISTS,
-        THEMES
-    }
-
     private JFrame holderFrame;
     private JPanel switcherPanel;
     private CardLayout switcherLayout;
@@ -24,7 +12,7 @@ public class MainWindow {
     private String frameTitle;
     private MainController controller;
 
-    private Panels activePanel;
+    private ApplicationPanel activePanel;
     private ApplicationWindow loginWindow;
     private ApplicationWindow landingWindow;
     private ApplicationWindow planningWindow;
@@ -37,7 +25,7 @@ public class MainWindow {
         this.switcherPanel = new JPanel(switcherLayout);
 
         this.controller = controller;
-        this.activePanel = Panels.LOGIN;
+        this.activePanel = ApplicationPanel.LOGIN;
         this.loginWindow = new LoginWindow(controller);
         this.landingWindow = new LandingWindow(controller);
         this.planningWindow = new PlanningWindow(controller);
@@ -50,8 +38,8 @@ public class MainWindow {
         javax.swing.SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(holderFrame, message));
     }
 
-    void switchCards(Panels toShow) {
-        if (toShow == Panels.LANDING || toShow == Panels.LOGIN) {
+    void switchCards(ApplicationPanel toShow) {
+        if (toShow == ApplicationPanel.LANDING || toShow == ApplicationPanel.LOGIN) {
             switchCards(toShow, this.frameTitle);
         } else {
             switchCards(toShow, toShow.name());
@@ -59,7 +47,7 @@ public class MainWindow {
 
     }
 
-    void switchCards(Panels toShow, String description) {
+    void switchCards(ApplicationPanel toShow, String description) {
         this.holderFrame.setTitle(description);
         this.activePanel = toShow;
         this.switcherLayout.show(switcherPanel, toShow.name());
@@ -76,10 +64,10 @@ public class MainWindow {
         holderFrame.setTitle(this.frameTitle);
         holderFrame.setLayout(new BorderLayout());
 
-        switcherPanel.add(this.loginWindow.getPanelHandler(), Panels.LOGIN.name());
-        switcherPanel.add(this.landingWindow.getPanelHandler(), Panels.LANDING.name());
-        switcherPanel.add(this.planningWindow.getPanelHandler(), Panels.PLANNING.name());
-        switcherPanel.add(this.eventsWindow.getPanelHandler(), Panels.EVENTS.name());
+        switcherPanel.add(this.loginWindow.getPanelHandler(), ApplicationPanel.LOGIN.name());
+        switcherPanel.add(this.landingWindow.getPanelHandler(), ApplicationPanel.LANDING.name());
+        switcherPanel.add(this.planningWindow.getPanelHandler(), ApplicationPanel.PLANNING.name());
+        switcherPanel.add(this.eventsWindow.getPanelHandler(), ApplicationPanel.EVENTS.name());
         holderFrame.add(switcherPanel, BorderLayout.CENTER);
         holderFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

@@ -6,8 +6,6 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import javax.swing.*;
 import java.awt.*;
 
-import radio.ui.MainWindow.Panels;
-
 public class LandingWindow implements ApplicationWindow {
     private JPanel background;
 
@@ -22,13 +20,13 @@ public class LandingWindow implements ApplicationWindow {
 
     LandingWindow(MainController controller) {
         $$$setupUI$$$();
-        tematicaButton.addActionListener(_e -> controller.swapWindow(Panels.THEMES));
-        incidenciasButton.addActionListener(_e -> controller.swapWindow(Panels.TICKETS));
-        anunciantesButton.addActionListener(_e -> controller.swapWindow(Panels.ADVERTISERS));
-        agendaMusicalButton.addActionListener(_e -> controller.swapWindow(Panels.EVENTS));
-        playlistsButton.addActionListener(_e -> controller.swapWindow(Panels.PLAYLISTS));
-        archivoMusicalButton.addActionListener(_e -> controller.swapWindow(Panels.MUSIC_ARCHIVE));
-        planificacionButton.addActionListener(_e -> controller.swapWindow(Panels.PLANNING));
+        tematicaButton.addActionListener(_e -> controller.swapWindow(ApplicationPanel.THEMES));
+        incidenciasButton.addActionListener(_e -> controller.swapWindow(ApplicationPanel.TICKETS));
+        anunciantesButton.addActionListener(_e -> controller.swapWindow(ApplicationPanel.ADVERTISERS));
+        agendaMusicalButton.addActionListener(_e -> controller.swapWindow(ApplicationPanel.EVENTS));
+        playlistsButton.addActionListener(_e -> controller.swapWindow(ApplicationPanel.PLAYLISTS));
+        archivoMusicalButton.addActionListener(_e -> controller.swapWindow(ApplicationPanel.MUSIC_ARCHIVE));
+        planificacionButton.addActionListener(_e -> controller.swapWindow(ApplicationPanel.PLANNING));
         logOutButton.addActionListener(_e -> controller.logout());
     }
 

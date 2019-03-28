@@ -4,7 +4,6 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import radio.actions.UpdateProgramList;
-import radio.core.Program;
 import radio.transfer.ProgramTransfer;
 
 import javax.swing.*;
@@ -15,7 +14,8 @@ import java.util.Observer;
 public class ProgramListPanel implements ApplicationWindow, Observer {
 
     private JPanel background;
-    private JList programListPanel;
+    // FIXME(borja): This list should probably contain JPanel
+    private JList<String> programListPanel;
     private JButton newProgramButton;
     private JTextField searchField;
     private JButton searchButton;
@@ -91,6 +91,6 @@ public class ProgramListPanel implements ApplicationWindow, Observer {
 
     private void createUIComponents() {
         this.listModel = new DefaultListModel<>();
-        programListPanel = new JList(listModel);
+        programListPanel = new JList<>(listModel);
     }
 }

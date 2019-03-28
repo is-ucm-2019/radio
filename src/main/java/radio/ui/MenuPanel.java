@@ -16,7 +16,7 @@ public class MenuPanel implements ApplicationWindow {
 
     MenuPanel(MainController cont) {
         $$$setupUI$$$();
-        menuButton.addActionListener(e -> cont.swapWindow(MainWindow.Panels.LANDING));
+        menuButton.addActionListener(e -> cont.swapWindow(ApplicationPanel.LANDING));
     }
 
     /**

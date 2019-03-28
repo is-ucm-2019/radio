@@ -1,27 +1,27 @@
 package radio.ui;
 
+import radio.actions.UpdateCalendarWeek;
+import radio.transfer.BroadcastTransfer;
+import radio.transfer.ProgramTransfer;
+import radio.util.TimeUtil;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalField;
-import java.time.temporal.WeekFields;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Observable;
+import java.util.Observer;
 
 public class CalendarPanel implements ApplicationWindow, Observer {
-    private DefaultTableModel tableModel;
 
+    private TableColumnModel columnHeaderModel;
     private LocalDate firstOfWeek;
-    private Locale locale = new Locale("es", "ES");
-    private TemporalField weekFieldISO = WeekFields.of(locale).dayOfWeek();
 
     private JPanel calendarPanel;
     private JTable calendarTable;
@@ -32,46 +32,54 @@ public class CalendarPanel implements ApplicationWindow, Observer {
     private JScrollPane holderPane;
     private JButton todayButton;
 
-    CalendarPanel(MainController _cont) {
-        firstOfWeek = getFirstOfWeek(LocalDate.now());
-        tableModel = new DefaultTableModel();
+    private CalendarController controller;
 
-        // One for every day of the week, plus timetable
-        tableModel.setColumnCount(7);
-        // One for every hour of the day, plus "all-day"
-        tableModel.setRowCount(26);
+    CalendarPanel(CalendarController controller) {
         $$$setupUI$$$();
+
+        this.controller = controller;
+
+        firstOfWeek = TimeUtil.firstDayOfWeekFrom(LocalDate.now());
+
+        // One column per day, plus timetable
+        // One for for every hour of the day, plus "all-day"
+        calendarTable.setModel(new DefaultTableModel(26, 8));
+        calendarTable.setDefaultRenderer(Object.class, new CalendarCellRenderer());
+        columnHeaderModel = calendarTable.getTableHeader().getColumnModel();
         calendarTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        calendarTable.setModel(this.tableModel);
         calendarTable.setAutoCreateColumnsFromModel(false);
 
         setupCalendar();
         prevWeek.addActionListener(e -> {
             firstOfWeek = firstOfWeek.minus(1, ChronoUnit.WEEKS);
-            updateCalendar();
+            SwingUtilities.invokeLater(() -> controller.getEventsForWeekStartingAt(firstOfWeek));
         });
 
         nextWeek.addActionListener(e -> {
             firstOfWeek = firstOfWeek.plus(1, ChronoUnit.WEEKS);
-            updateCalendar();
+            SwingUtilities.invokeLater(() -> controller.getEventsForWeekStartingAt(firstOfWeek));
         });
 
         todayButton.addActionListener(e -> {
-            firstOfWeek = getFirstOfWeek(LocalDate.now());
-            updateCalendar();
+            firstOfWeek = TimeUtil.firstDayOfWeekFrom(LocalDate.now());
+            SwingUtilities.invokeLater(() -> controller.getEventsForWeekStartingAt(firstOfWeek));
         });
 
     }
 
-    private LocalDate getFirstOfWeek(LocalDate from) {
-        return from.with(weekFieldISO, 1);
+    private void clearCalendar() {
+        DefaultTableModel model = (DefaultTableModel) calendarTable.getModel();
+        model.setRowCount(0);
     }
 
     private void setupCalendar() {
-        JTableHeader header = calendarTable.getTableHeader();
-        TableColumnModel model = header.getColumnModel();
-        TableColumn tc = model.getColumn(0);
+        DefaultTableModel tableModel = (DefaultTableModel) calendarTable.getModel();
+        tableModel.setColumnCount(8);
+        tableModel.setRowCount(26);
+
+        TableColumn tc = columnHeaderModel.getColumn(0);
         tc.setHeaderValue("Horario");
+        tableModel.setValueAt("all-day", 0, 0);
         for (int i = 1; i < tableModel.getRowCount(); i++) {
             tableModel.setValueAt(String.format("%02d", (i - 1) % 24) + ":00", i, 0);
         }
@@ -80,25 +88,26 @@ public class CalendarPanel implements ApplicationWindow, Observer {
     }
 
     private void updateCalendar() {
+        Locale locale = TimeUtil.locale;
         int year = firstOfWeek.getYear();
-        String dayOfWeek = firstOfWeek.getDayOfWeek().getDisplayName(TextStyle.SHORT, locale);
         String month = firstOfWeek.getMonth().getDisplayName(TextStyle.FULL, locale);
-        int dayOfMonth = firstOfWeek.getDayOfMonth();
-
         currentWeekLabel.setText(month + " " + year);
-        JTableHeader header = calendarTable.getTableHeader();
-        TableColumnModel model = header.getColumnModel();
 
-        TableColumn tc = model.getColumn(1);
-        tc.setHeaderValue(dayOfWeek + " " + dayOfMonth);
-        for (int i = 2; i < 7; i++) {
-            LocalDate next = firstOfWeek.plus(i, ChronoUnit.DAYS);
-            dayOfMonth = next.getDayOfMonth();
-            dayOfWeek = next.getDayOfWeek().getDisplayName(TextStyle.SHORT, locale);
-            tc = model.getColumn(i);
+        TableColumn tc;
+        int dayOfMonth;
+        String dayOfWeek;
+        LocalDate current = firstOfWeek;
+        for (int i = 1; i < 8; i++) {
+            dayOfMonth = current.getDayOfMonth();
+            dayOfWeek = current.getDayOfWeek().getDisplayName(TextStyle.SHORT, locale);
+            tc = columnHeaderModel.getColumn(i);
             tc.setHeaderValue(dayOfWeek + " " + dayOfMonth);
+
+            current = current.plusDays(1);
         }
-        header.repaint();
+
+        // Only repaint header, we didnt' change anything else
+        calendarTable.getTableHeader().repaint();
     }
 
     /**
@@ -157,12 +166,33 @@ public class CalendarPanel implements ApplicationWindow, Observer {
         return (JPanel) this.$$$getRootComponent$$$();
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
-
     @Override
     public void update(Observable o, Object arg) {
+        if (arg instanceof UpdateCalendarWeek) {
+            showProgramsForWeek(((UpdateCalendarWeek) arg).list);
+        }
+    }
 
+    private void showProgramsForWeek(List<ProgramTransfer> programs) {
+        clearCalendar();
+        setupCalendar();
+
+        DefaultTableModel tableModel = (DefaultTableModel) calendarTable.getModel();
+        int column;
+        int rowStart;
+        int rowEnd;
+
+        for (ProgramTransfer p : programs) {
+            for (BroadcastTransfer b : p.broadcasts) {
+                System.out.println(b);
+                column = b.schedule.getDayOfWeekNumeric();
+                // +1 for index offset
+                rowStart = b.schedule.getStartNumeric() + 1;
+                rowEnd = b.schedule.getEndNumeric() + 1;
+                for (int i = rowStart; i < rowEnd; i++) {
+                    tableModel.setValueAt(b, i, column);
+                }
+            }
+        }
     }
 }

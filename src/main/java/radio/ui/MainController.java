@@ -1,7 +1,9 @@
 package radio.ui;
 
 import radio.core.Core;
+import radio.util.TimeUtil;
 
+import java.time.LocalDate;
 import java.util.Observer;
 
 public class MainController {
@@ -16,15 +18,22 @@ public class MainController {
         this.frame = frame;
     }
 
-    void loginEvent(String _username, String _password) {
-        frame.switchCards(MainWindow.Panels.LANDING);
+    // FIXME(borja): Validate combo
+    void loginEvent(String username, String password) {
+        core.login(username, password);
+        frame.switchCards(ApplicationPanel.LANDING);
     }
 
     void logout() {
-        frame.switchCards(MainWindow.Panels.LOGIN);
+        core.logout();
+        frame.switchCards(ApplicationPanel.LOGIN);
     }
 
-    void swapWindow(MainWindow.Panels panel) {
+    void swapWindow(ApplicationPanel panel) {
+        if (panel == ApplicationPanel.PLANNING) {
+            this.core.loadPlanningInfo(TimeUtil.firstDayOfWeekFrom(LocalDate.now()));
+        }
+
         frame.switchCards(panel);
     }
 

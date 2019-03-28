@@ -1,10 +1,14 @@
 package radio.core;
 
+import radio.actions.UpdateCalendarWeek;
 import radio.actions.UpdateProgramList;
 import radio.core.users.User;
+import radio.dao.BroadcastDAO;
 import radio.dao.ProgramDAO;
 import radio.transfer.ProgramTransfer;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
@@ -12,9 +16,11 @@ import java.util.Optional;
 public class Core extends Observable {
     private Optional<User> currentUser = Optional.empty();
     private ProgramDAO programDAO;
+    private BroadcastDAO broadcastDAO;
 
     public Core() {
         programDAO = new ProgramDAO();
+        broadcastDAO = new BroadcastDAO();
     }
 
     public void dispatchObserver(Observer obs) {
@@ -28,6 +34,17 @@ public class Core extends Observable {
 
     public void logout() {
         this.currentUser = Optional.empty();
+    }
+
+    // Loads all programs and broadcasts for the week starting on `start`
+    public void loadPlanningInfo(LocalDate start) {
+        List<ProgramTransfer> programs = programDAO.loadAll();
+        for (ProgramTransfer p : programs) {
+            p.broadcasts = broadcastDAO.loadForWeek(p, start);
+        }
+
+        this.setChanged();
+        this.notifyObservers(new UpdateCalendarWeek(programs));
     }
 
     public boolean programExists(ProgramTransfer tr) {

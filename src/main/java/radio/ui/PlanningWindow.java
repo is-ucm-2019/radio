@@ -19,7 +19,7 @@ public class PlanningWindow implements ApplicationWindow {
         containerPanel = new JPanel(new BorderLayout());
 
         this.menuView = new MenuPanel(this.controller);
-        this.calendarView = new CalendarPanel(this.controller);
+        this.calendarView = new CalendarPanel(new PlanningCalendarController(controller));
         this.allProgramsView = new ProgramListPanel(plController);
 
         this.controller.addObserver(calendarView);
