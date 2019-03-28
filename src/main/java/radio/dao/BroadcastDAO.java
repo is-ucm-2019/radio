@@ -83,6 +83,8 @@ public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
         // LocalTime start = LocalTime.now().withHour(0).withMinute(0);
         // LocalDateTime end = firstOfWeek.plusDays(7);
         // TreeMap<LocalDateTime, Broadcast> it = this.db.get(p.title);
+        // XXX: See
+        // https://stackoverflow.com/questions/40689813/how-to-iterate-over-a-hashmap-starting-from-a-particular-key-value-in-java
         // for (Broadcast br : it.tailMap(LocalDateTime.of(firstOfWeek, start)).values()) {
         //     if (br.getSchedule().compareTo(end))
         // }
