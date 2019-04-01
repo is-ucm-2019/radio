@@ -3,7 +3,6 @@ package radio.ui;
 import radio.transfer.ProgramTransfer;
 
 import java.awt.*;
-import java.time.LocalDate;
 
 class PlanningController {
 
@@ -20,9 +19,5 @@ class PlanningController {
         } else {
             this.parentController.core.addProgram(tr);
         }
-    }
-
-    void getEventsForWeekStartingAt(LocalDate start) {
-        this.parentController.core.loadPlanningInfo(start);
     }
 }
