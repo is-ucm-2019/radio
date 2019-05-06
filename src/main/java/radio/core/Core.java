@@ -1,10 +1,12 @@
 package radio.core;
 
+import radio.actions.UpdateBroadcastCalendar;
 import radio.actions.UpdateCalendarWeek;
 import radio.actions.UpdateProgramList;
 import radio.core.users.User;
 import radio.dao.BroadcastDAO;
 import radio.dao.ProgramDAO;
+import radio.transfer.BroadcastTransfer;
 import radio.transfer.ProgramTransfer;
 
 import java.time.LocalDate;
@@ -51,11 +53,21 @@ public class Core extends Observable {
         return this.programDAO.exists(tr);
     }
 
+    public Optional<ProgramTransfer> programFromName(String name) {
+        return this.programDAO.findProgram(name);
+    }
+
     // TODO(borja): Don't update with the entire list, only the last added
     // TODO(borja): Show the user window to select advertisers
     public void addProgram(ProgramTransfer tr) {
         this.programDAO.persist(tr);
         this.setChanged();
         this.notifyObservers(new UpdateProgramList(this.programDAO.loadAll()));
+    }
+
+    public void addBroadcast(BroadcastTransfer tr) {
+        this.broadcastDAO.persist(tr);
+        this.setChanged();
+        this.notifyObservers(new UpdateBroadcastCalendar(tr));
     }
 }

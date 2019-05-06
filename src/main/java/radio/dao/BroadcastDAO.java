@@ -63,8 +63,7 @@ public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
     //     return l;
     // }
 
-    // FIXME(borja): Return real data
-    public List<BroadcastTransfer> loadForWeek(ProgramTransfer p, LocalDate firstOfWeek) {
+    public List<BroadcastTransfer> loadRandomForWeek(ProgramTransfer p, LocalDate firstOfWeek) {
         ArrayList<BroadcastTransfer> l = new ArrayList<>();
         LocalDateTime currDay = firstOfWeek.atTime(0, 0);
         for (int i = 0; i < 7; i++) {
@@ -75,20 +74,23 @@ public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
         }
 
         return l;
+    }
 
-        // if (!this.db.containsKey(p.title)) {
-        //     return l;
-        // }
-        //
-        // LocalTime start = LocalTime.now().withHour(0).withMinute(0);
-        // LocalDateTime end = firstOfWeek.plusDays(7);
-        // TreeMap<LocalDateTime, Broadcast> it = this.db.get(p.title);
-        // XXX: See
-        // https://stackoverflow.com/questions/40689813/how-to-iterate-over-a-hashmap-starting-from-a-particular-key-value-in-java
-        // for (Broadcast br : it.tailMap(LocalDateTime.of(firstOfWeek, start)).values()) {
-        //     if (br.getSchedule().compareTo(end))
-        // }
-        //
-        // return l;
+    public List<BroadcastTransfer> loadForWeek(ProgramTransfer p, LocalDate firstOfWeek) {
+        ArrayList<BroadcastTransfer> l = new ArrayList<>();
+        if (!this.db.containsKey(p.title)) {
+            return l;
+        }
+
+        LocalDateTime startKey = LocalDateTime.of(firstOfWeek, LocalTime.of(0, 0));
+        LocalDateTime endKey = LocalDateTime.of(firstOfWeek.plusDays(7), LocalTime.of(23,59));
+        TreeMap<LocalDateTime, Broadcast> it = this.db.get(p.title);
+        for (Broadcast br : it.tailMap(startKey).values()) {
+            if (!br.getSchedule().getEnd().isAfter(endKey)) {
+                l.add(new BroadcastTransfer(p, br));
+            }
+        }
+
+        return l;
     }
 }

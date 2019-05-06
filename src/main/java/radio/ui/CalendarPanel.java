@@ -1,6 +1,8 @@
 package radio.ui;
 
+import radio.actions.UpdateBroadcastCalendar;
 import radio.actions.UpdateCalendarWeek;
+import radio.core.Broadcast;
 import radio.transfer.BroadcastTransfer;
 import radio.transfer.ProgramTransfer;
 import radio.util.TimeUtil;
@@ -75,7 +77,7 @@ public class CalendarPanel implements ApplicationWindow, Observer {
     private void setupCalendar() {
         DefaultTableModel tableModel = (DefaultTableModel) calendarTable.getModel();
         tableModel.setColumnCount(8);
-        tableModel.setRowCount(26);
+        tableModel.setRowCount(25);
 
         TableColumn tc = columnHeaderModel.getColumn(0);
         tc.setHeaderValue("Horario");
@@ -170,6 +172,8 @@ public class CalendarPanel implements ApplicationWindow, Observer {
     public void update(Observable o, Object arg) {
         if (arg instanceof UpdateCalendarWeek) {
             showProgramsForWeek(((UpdateCalendarWeek) arg).list);
+        } else if (arg instanceof UpdateBroadcastCalendar) {
+            putBroadcastOnCalendar(((UpdateBroadcastCalendar) arg).tr);
         }
     }
 
@@ -178,21 +182,26 @@ public class CalendarPanel implements ApplicationWindow, Observer {
         setupCalendar();
 
         DefaultTableModel tableModel = (DefaultTableModel) calendarTable.getModel();
-        int column;
-        int rowStart;
-        int rowEnd;
-
         for (ProgramTransfer p : programs) {
-            for (BroadcastTransfer b : p.broadcasts) {
-                System.out.println(b);
-                column = b.schedule.getDayOfWeekNumeric();
-                // +1 for index offset
-                rowStart = b.schedule.getStartNumeric() + 1;
-                rowEnd = b.schedule.getEndNumeric() + 1;
-                for (int i = rowStart; i < rowEnd; i++) {
-                    tableModel.setValueAt(b, i, column);
-                }
+            for (BroadcastTransfer tr : p.broadcasts) {
+                putBroadcastOnCalendarInternal(tableModel, tr);
             }
+        }
+    }
+
+    private void putBroadcastOnCalendar(BroadcastTransfer tr) {
+        DefaultTableModel tableModel = (DefaultTableModel) calendarTable.getModel();
+        putBroadcastOnCalendarInternal(tableModel, tr);
+    }
+
+    private void putBroadcastOnCalendarInternal(DefaultTableModel tableModel, BroadcastTransfer tr) {
+        int column = tr.schedule.getDayOfWeekNumeric();
+        // +1 for index offset
+        int rowStart = tr.schedule.getStartNumeric() + 1;
+        int rowEnd = tr.schedule.getEndNumeric() + 1;
+
+        for (int i = rowStart; i < rowEnd; i++) {
+            tableModel.setValueAt(tr, i, column);
         }
     }
 }

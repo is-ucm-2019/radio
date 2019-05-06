@@ -1,5 +1,7 @@
 package radio.transfer;
 
+import radio.core.Broadcast;
+import radio.core.Program;
 import radio.util.BroadcastTime;
 
 import java.time.LocalDateTime;
@@ -16,6 +18,11 @@ public final class BroadcastTransfer {
     public BroadcastTransfer(ProgramTransfer parent, BroadcastTime time) {
         this.parent = parent;
         this.schedule = time;
+    }
+
+    public BroadcastTransfer(ProgramTransfer parent, Broadcast br) {
+        this.parent = parent;
+        this.schedule = br.getSchedule();
     }
 
     @Override

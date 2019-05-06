@@ -29,12 +29,24 @@ public class BroadcastTime implements Comparable<BroadcastTime> {
 
     // FIXME(borja): Return fine-grained time
     public int getStartNumeric() {
-        return container.getKey().getHour();
+        int minutes = container.getKey().getMinute();
+        int hour = container.getKey().getHour();
+        if (minutes > 0) {
+            ++hour;
+        }
+
+        return hour;
     }
 
     // FIXME(borja): Return fine-grained time
     public int getEndNumeric() {
-        return container.getValue().getHour();
+        int minutes = container.getValue().getMinute();
+        int hour = container.getValue().getHour();
+        if (minutes > 0) {
+            ++hour;
+        }
+
+        return hour;
     }
 
     public int getDayOfWeekNumeric() {
@@ -49,5 +61,9 @@ public class BroadcastTime implements Comparable<BroadcastTime> {
         }
 
         return sameStart;
+    }
+
+    public String toString() {
+        return "<start=" + getStart().toString() + ", end=" + getEnd().toString() + ">";
     }
 }

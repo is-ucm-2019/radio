@@ -1,8 +1,11 @@
 package radio.ui;
 
+import radio.transfer.BroadcastTransfer;
 import radio.transfer.ProgramTransfer;
 
 import java.awt.*;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 class PlanningController {
 
@@ -19,5 +22,17 @@ class PlanningController {
         } else {
             this.parentController.core.addProgram(tr);
         }
+    }
+
+    // FIXME(borja): Need to check if schedule is taken
+    void addBroadcastEvent(String name, LocalDateTime start, LocalDateTime end) {
+        Optional<ProgramTransfer> pt = this.parentController.core.programFromName(name);
+        if (!pt.isPresent()) {
+            this.parentController.showToUser("Invalid broadcast, program not found!");
+            return;
+        }
+
+        BroadcastTransfer transfer = new BroadcastTransfer(pt.get(), start, end);
+        this.parentController.core.addBroadcast(transfer);
     }
 }

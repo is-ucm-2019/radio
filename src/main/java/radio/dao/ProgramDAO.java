@@ -4,6 +4,7 @@ import radio.core.Program;
 import radio.transfer.ProgramTransfer;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -32,8 +33,14 @@ public class ProgramDAO implements AppDAO<ProgramTransfer> {
 
     @Override
     public List<ProgramTransfer> loadAll() {
-        return this.db.values().stream().map(v -> {
-            return new ProgramTransfer(v.getTitle(), v.getDescription(), v.getColor());
-        }).collect(Collectors.toList());
+        return this.db.values().stream().map(ProgramTransfer::new).collect(Collectors.toList());
+    }
+
+    public Optional<ProgramTransfer> findProgram(String programName) {
+        if (this.db.containsKey(programName)) {
+            return Optional.of(new ProgramTransfer(db.get(programName)));
+        } else {
+            return Optional.empty();
+        }
     }
 }

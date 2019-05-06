@@ -1,5 +1,7 @@
 package radio.transfer;
 
+import radio.core.Program;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,5 +16,11 @@ public final class ProgramTransfer {
         this.title = title;
         this.description = description;
         this.color = color;
+    }
+
+    public ProgramTransfer(Program from) {
+        this.title = from.getTitle();
+        this.description = from.getDescription();
+        this.color = from.getColor();
     }
 }
