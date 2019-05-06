@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.text.DateFormatSymbols;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Arrays;
 
@@ -44,6 +45,48 @@ public class NewThemeDialog extends JDialog implements ApplicationWindow {
     }
 
     private void onOK(ThemesController controller) {
+        String themeName = nameField.getText();
+        String descr = descriptionArea.getText();
+        if (themeName == null || themeName.isEmpty() || descr == null) {
+            show("The theme name can't be empty!");
+            return;
+        }
+
+        int startMonthIdx = startMonthDropdown.getSelectedIndex();
+        int endMonthIdx = endMonthDropdown.getSelectedIndex();
+
+        if (endMonthIdx < startMonthIdx) {
+            showSync("End time can't be before start time");
+            return;
+        }
+
+        int startDayIdx = startDayDropdown.getSelectedIndex();
+        int endDayIdx = endDayDropdown.getSelectedIndex();
+
+        boolean sameMonth = startMonthIdx == endMonthIdx;
+        if (sameMonth && (endDayIdx < startDayIdx)) {
+            showSync("End time can't be before start time");
+            return;
+        }
+
+        // Get date with current year, will change later
+        LocalDate now = LocalDate.now();
+        LocalDate startDate = now.withMonth(startMonthIdx+1).withDayOfMonth(startDayIdx + 1);
+        LocalDate endDate = now.withMonth(endMonthIdx+1).withDayOfMonth(endDayIdx+1);
+
+        if (startDate.isBefore(now)) {
+            showSync("Can't schedule theme for a past time");
+            return;
+        }
+
+        // Might as well, maybe redundant check?
+        if (endDate.isBefore(startDate)) {
+            showSync("End time can't be before start time");
+            return;
+        }
+
+        SwingUtilities.invokeLater(() -> controller.addThemeEvent(themeName, descr, startDate, endDate));
+        dispose();
     }
 
     /**
@@ -161,7 +204,6 @@ public class NewThemeDialog extends JDialog implements ApplicationWindow {
     }
 
     private void setDropdownModel(JComboBox dropdown, int monthIdx) {
-        System.out.println("Setting model for month " + monthIdx);
         YearMonth currentMonth = YearMonth.now().withMonth(monthIdx);
         int daysForMonth = currentMonth.lengthOfMonth();
         String[] days = new String[daysForMonth];
