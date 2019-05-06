@@ -63,6 +63,26 @@ public class BroadcastTime implements Comparable<BroadcastTime> {
         return sameStart;
     }
 
+    // FIXME(borja): Figure this out
+    public boolean overlaps(BroadcastTime o) {
+        LocalDateTime otherStart = o.getStart();
+        LocalDateTime otherEnd = o.getEnd();
+
+        LocalDateTime ourStart = this.getStart();
+        LocalDateTime ourEnd = this.getEnd();
+
+        // Overlaps from above
+        boolean overlapsHigh = otherStart.isAfter(ourStart) && otherStart.isBefore(ourEnd);
+
+        // Fits inside
+        boolean fitsInside = otherStart.isAfter(ourStart) && otherEnd.isBefore(ourEnd);
+
+        // Overlaps from below
+        boolean overlapsLow = otherEnd.isAfter(ourStart) && otherEnd.isBefore(otherEnd);
+
+        return overlapsHigh || fitsInside || overlapsLow;
+    }
+
     public String toString() {
         return "<start=" + getStart().toString() + ", end=" + getEnd().toString() + ">";
     }

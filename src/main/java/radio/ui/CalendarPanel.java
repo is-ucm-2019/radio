@@ -1,5 +1,6 @@
 package radio.ui;
 
+import radio.actions.BroadcastOverlapError;
 import radio.actions.UpdateBroadcastCalendar;
 import radio.actions.UpdateCalendarWeek;
 import radio.transfer.BroadcastTransfer;
@@ -173,6 +174,8 @@ public class CalendarPanel implements ApplicationWindow, Observer {
             showProgramsForWeek(((UpdateCalendarWeek) arg).list);
         } else if (arg instanceof UpdateBroadcastCalendar) {
             putBroadcastOnCalendar(((UpdateBroadcastCalendar) arg).tr);
+        } else if (arg instanceof BroadcastOverlapError) {
+            showOverlapError(((BroadcastOverlapError) arg).errorMessage);
         }
     }
 
@@ -202,5 +205,9 @@ public class CalendarPanel implements ApplicationWindow, Observer {
         for (int i = rowStart; i < rowEnd; i++) {
             tableModel.setValueAt(tr, i, column);
         }
+    }
+
+    private void showOverlapError(String errorMessage) {
+        show("Couldn't persist broadcast for program " + errorMessage);
     }
 }

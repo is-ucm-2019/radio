@@ -1,5 +1,6 @@
 package radio.core;
 
+import radio.actions.BroadcastOverlapError;
 import radio.actions.UpdateBroadcastCalendar;
 import radio.actions.UpdateCalendarWeek;
 import radio.actions.UpdateProgramList;
@@ -66,8 +67,13 @@ public class Core extends Observable {
     }
 
     public void addBroadcast(BroadcastTransfer tr) {
-        this.broadcastDAO.persist(tr);
-        this.setChanged();
-        this.notifyObservers(new UpdateBroadcastCalendar(tr));
+        if (this.broadcastDAO.overlaps(tr)) {
+            this.setChanged();
+            this.notifyObservers(new BroadcastOverlapError(tr.parent.title));
+        } else {
+            this.broadcastDAO.persist(tr);
+            this.setChanged();
+            this.notifyObservers(new UpdateBroadcastCalendar(tr));
+        }
     }
 }

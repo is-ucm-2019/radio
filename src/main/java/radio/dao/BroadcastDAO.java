@@ -25,6 +25,19 @@ public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
         return this.db.containsKey(el.parent.title);
     }
 
+    // FIXME(borja): Could build other structure to check overlaps faster
+    public boolean overlaps(BroadcastTransfer el) {
+        for (Map.Entry<String, TreeMap<LocalDateTime, Broadcast>> entry : db.entrySet()) {
+            for(Broadcast b : entry.getValue().values()) {
+                if (el.schedule.overlaps(b.getSchedule())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     @Override
     public void persist(BroadcastTransfer el) {
         Broadcast b = new Broadcast(el.parent.title, el.schedule);
