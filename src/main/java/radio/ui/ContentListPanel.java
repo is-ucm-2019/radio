@@ -16,7 +16,10 @@ public class ContentListPanel implements ApplicationWindow {
     private JLabel viewTitle;
     private JPanel searchPane;
 
-    ContentListPanel() {
+    private String labelTitle;
+
+    ContentListPanel(String labelTitle) {
+        this.labelTitle = labelTitle;
         $$$setupUI$$$();
     }
 
@@ -28,6 +31,7 @@ public class ContentListPanel implements ApplicationWindow {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
+        createUIComponents();
         background = new JPanel();
         background.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         scrollPane = new JScrollPane();
@@ -35,8 +39,6 @@ public class ContentListPanel implements ApplicationWindow {
         menuPane = new JPanel();
         menuPane.setLayout(new BorderLayout(0, 0));
         background.add(menuPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        viewTitle = new JLabel();
-        viewTitle.setText("Label");
         menuPane.add(viewTitle, BorderLayout.WEST);
         searchPane = new JPanel();
         searchPane.setLayout(new BorderLayout(0, 0));
@@ -61,5 +63,10 @@ public class ContentListPanel implements ApplicationWindow {
     @Override
     public JPanel getPanelHandler() {
         return (JPanel) $$$getRootComponent$$$();
+    }
+
+    private void createUIComponents() {
+        viewTitle = new JLabel();
+        viewTitle.setText(this.labelTitle);
     }
 }

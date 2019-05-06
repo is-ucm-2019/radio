@@ -23,11 +23,9 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="323a8" class="javax.swing.JLabel" binding="viewTitle">
+          <component id="323a8" class="javax.swing.JLabel" binding="viewTitle" custom-create="true">
             <constraints border-constraint="West"/>
-            <properties>
-              <text value="Label"/>
-            </properties>
+            <properties/>
           </component>
           <grid id="7486f" binding="searchPane" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints border-constraint="Center"/>

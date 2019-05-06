@@ -2,7 +2,6 @@ package radio.ui;
 
 import radio.actions.UpdateBroadcastCalendar;
 import radio.actions.UpdateCalendarWeek;
-import radio.core.Broadcast;
 import radio.transfer.BroadcastTransfer;
 import radio.transfer.ProgramTransfer;
 import radio.util.TimeUtil;

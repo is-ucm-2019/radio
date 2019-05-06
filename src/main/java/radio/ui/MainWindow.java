@@ -17,6 +17,7 @@ public class MainWindow {
     private ApplicationWindow landingWindow;
     private ApplicationWindow planningWindow;
     private ApplicationWindow eventsWindow;
+    private ApplicationWindow themesWindow;
 
     public MainWindow(MainController controller) {
         frameTitle = "Radio Enterprises Inc.";
@@ -30,6 +31,7 @@ public class MainWindow {
         this.landingWindow = new LandingWindow(controller);
         this.planningWindow = new PlanningWindow(controller);
         this.eventsWindow = new EventsWindow(controller);
+        this.themesWindow = new ThemeWindow(controller);
 
         initUI();
     }
@@ -68,6 +70,7 @@ public class MainWindow {
         switcherPanel.add(this.landingWindow.getPanelHandler(), ApplicationPanel.LANDING.name());
         switcherPanel.add(this.planningWindow.getPanelHandler(), ApplicationPanel.PLANNING.name());
         switcherPanel.add(this.eventsWindow.getPanelHandler(), ApplicationPanel.EVENTS.name());
+        switcherPanel.add(this.themesWindow.getPanelHandler(), ApplicationPanel.THEMES.name());
         holderFrame.add(switcherPanel, BorderLayout.CENTER);
         holderFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

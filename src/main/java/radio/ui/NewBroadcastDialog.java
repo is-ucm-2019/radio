@@ -78,7 +78,7 @@ public class NewBroadcastDialog extends JDialog implements ApplicationWindow {
 
         // End is at 00:00 of the next day
         if (endIdx == 24) {
-            end = LocalDateTime.of(day, LocalTime.of(23,59));
+            end = LocalDateTime.of(day, LocalTime.of(23, 59));
         } else {
             end = LocalDateTime.of(day, LocalTime.of(endIdx, 0));
         }
