@@ -29,7 +29,7 @@ public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
     public boolean overlaps(BroadcastTransfer el) {
         for (Map.Entry<String, TreeMap<LocalDateTime, Broadcast>> entry : db.entrySet()) {
             for(Broadcast b : entry.getValue().values()) {
-                if (el.schedule.overlaps(b.getSchedule())) {
+                if (b.getSchedule().overlaps(el.schedule)) {
                     return true;
                 }
             }

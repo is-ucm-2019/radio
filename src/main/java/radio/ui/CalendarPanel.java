@@ -170,6 +170,10 @@ public class CalendarPanel implements ApplicationWindow, Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        if (!getPanelHandler().isShowing()) {
+            return;
+        }
+
         if (arg instanceof UpdateCalendarWeek) {
             showProgramsForWeek(((UpdateCalendarWeek) arg).list);
         } else if (arg instanceof UpdateBroadcastCalendar) {

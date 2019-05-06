@@ -1,7 +1,6 @@
 package radio.transfer;
 
 import radio.core.Broadcast;
-import radio.core.Program;
 import radio.util.BroadcastTime;
 
 import java.time.LocalDateTime;
