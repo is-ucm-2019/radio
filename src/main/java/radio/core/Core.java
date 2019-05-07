@@ -7,6 +7,7 @@ import radio.actions.UpdateProgramList;
 import radio.core.users.User;
 import radio.dao.BroadcastDAO;
 import radio.dao.ProgramDAO;
+import radio.dao.ThemeDAO;
 import radio.transfer.BroadcastTransfer;
 import radio.transfer.ProgramTransfer;
 
@@ -20,10 +21,12 @@ public class Core extends Observable {
     private Optional<User> currentUser = Optional.empty();
     private ProgramDAO programDAO;
     private BroadcastDAO broadcastDAO;
+    private ThemeDAO themeDAO;
 
     public Core() {
         programDAO = new ProgramDAO();
         broadcastDAO = new BroadcastDAO();
+        themeDAO = new ThemeDAO();
     }
 
     public void dispatchObserver(Observer obs) {

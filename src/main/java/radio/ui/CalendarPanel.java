@@ -212,6 +212,6 @@ public class CalendarPanel implements ApplicationWindow, Observer {
     }
 
     private void showOverlapError(String errorMessage) {
-        show("Couldn't persist broadcast for program " + errorMessage);
+        show("Error: couldn't create broacast. Selected slot for " + errorMessage + " broadcast is already full");
     }
 }

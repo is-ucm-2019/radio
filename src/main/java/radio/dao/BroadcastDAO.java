@@ -4,13 +4,10 @@ import radio.core.Broadcast;
 import radio.transfer.BroadcastTransfer;
 import radio.transfer.ProgramTransfer;
 import radio.util.BroadcastTime;
-import radio.util.TimeUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -106,4 +103,8 @@ public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
 
         return l;
     }
+
+    // TODO(borja): Implement loadForRage(LocalDate first, LocalDate last)
+    // figure out how to deal with not having the programs
+    // maybe pass the entire range of programs to this?
 }
