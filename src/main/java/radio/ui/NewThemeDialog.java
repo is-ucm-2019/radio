@@ -178,24 +178,30 @@ public class NewThemeDialog extends JDialog implements ApplicationWindow {
     }
 
     private void createUIComponents() {
+        LocalDate today = LocalDate.now();
+        int currentMonthIdx = today.getMonthValue() - 1;
+
         String[] months = new DateFormatSymbols(TimeUtil.locale).getMonths();
         months = Arrays.copyOfRange(months, 0, 12);
 
+        // Month dropdowns
         startMonthDropdown = new JComboBox(months);
-        startDayDropdown = new JComboBox();
-        startMonthDropdown.setSelectedIndex(0);
-        startMonthDropdown.addActionListener(actionFor(startMonthDropdown, startDayDropdown));
-        setDropdownModel(startDayDropdown, 1);
+        startMonthDropdown.setSelectedIndex(currentMonthIdx);
 
         endMonthDropdown = new JComboBox(months);
+        endMonthDropdown.setSelectedIndex(currentMonthIdx);
+
+        // Day dropdown
+        startDayDropdown = new JComboBox();
+        startMonthDropdown.addActionListener(actionFor(startMonthDropdown, startDayDropdown));
+        setDropdownModel(startDayDropdown, currentMonthIdx);
+
         endDayDropdown = new JComboBox();
-        endMonthDropdown.setSelectedIndex(0);
         endMonthDropdown.addActionListener(actionFor(endMonthDropdown, endDayDropdown));
-        setDropdownModel(endDayDropdown, 1);
+        setDropdownModel(endDayDropdown, currentMonthIdx);
     }
 
-    // Utility function, returns an Action Listener that updates
-    // the associated combobox
+    // Will update the day range so it is correct for the selected month
     private ActionListener actionFor(JComboBox src, JComboBox target) {
         return (e -> {
             int monthIdx = src.getSelectedIndex();
