@@ -5,6 +5,9 @@ import javax.swing.*;
 public interface ApplicationWindow {
     JPanel getPanelHandler();
 
+    // Executed when window is about to be shown to the user
+    default void willShow() {}
+
     default void show(String message) {
         SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(getPanelHandler(), message));
     }

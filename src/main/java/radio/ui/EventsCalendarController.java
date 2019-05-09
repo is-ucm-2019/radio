@@ -9,7 +9,7 @@ public class EventsCalendarController implements CalendarController {
         this.parentController = cont;
     }
 
-    // FIXME(borja): Implement
+    // TODO(borja): Implement
     @Override
     public void getEventsForWeekStartingAt(LocalDate start) {
         throw new UnsupportedOperationException();

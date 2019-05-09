@@ -38,4 +38,10 @@ public class PlanningWindow implements ApplicationWindow {
     public JPanel getPanelHandler() {
         return containerPanel;
     }
+
+    @Override
+    public void willShow() {
+        this.calendarView.willShow();
+        this.allProgramsView.willShow();
+    }
 }

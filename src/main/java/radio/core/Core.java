@@ -1,21 +1,21 @@
 package radio.core;
 
-import radio.actions.BroadcastOverlapError;
-import radio.actions.UpdateBroadcastCalendar;
-import radio.actions.UpdateCalendarWeek;
-import radio.actions.UpdateProgramList;
+import radio.actions.*;
 import radio.core.users.User;
 import radio.dao.BroadcastDAO;
 import radio.dao.ProgramDAO;
 import radio.dao.ThemeDAO;
 import radio.transfer.BroadcastTransfer;
 import radio.transfer.ProgramTransfer;
+import radio.transfer.ThemeTransfer;
+import radio.util.ThemeSchedule;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Core extends Observable {
     private Optional<User> currentUser = Optional.empty();
@@ -78,5 +78,41 @@ public class Core extends Observable {
             this.setChanged();
             this.notifyObservers(new UpdateBroadcastCalendar(tr));
         }
+    }
+
+    public void allThemes() {
+        this.setChanged();
+        this.notifyObservers(new ShowThemeList(this.themeDAO.loadAll()));
+    }
+
+    public void validateTheme(ThemeTransfer tr) {
+        ThemeSchedule sched = tr.schedule;
+        List<BroadcastTransfer> l = this.programDAO
+                                        .loadAll()
+                                        .stream()
+                                        .flatMap(program ->
+                                                    this.broadcastDAO.loadForRange(program, sched))
+                                        .collect(Collectors.toList());
+
+        if (l.isEmpty()) {
+            System.out.println("No theme overlap!");
+            this.setChanged();
+            this.notifyObservers(new UpdateThemeList(tr));
+        } else {
+            System.out.println("Theme overlaps");
+            this.setChanged();
+            this.notifyObservers(new ChooseBroadcasts(tr, l));
+        }
+    }
+
+    public void confirmTheme(ThemeTransfer tr, List<BroadcastTransfer> chosen) {
+        for (BroadcastTransfer b : chosen) {
+            // TODO(borja): Implement
+            System.out.println("User chose " + b);
+            // b.themes.add(tr);
+            // this.broadcastDAO.update(b);
+        }
+
+        this.themeDAO.persist(tr);
     }
 }

@@ -4,6 +4,7 @@ import radio.core.Theme;
 import radio.util.ThemeSchedule;
 
 import java.awt.Color;
+import java.time.LocalDate;
 import java.util.Optional;
 
 public class ThemeTransfer {
@@ -16,6 +17,13 @@ public class ThemeTransfer {
         this.name = name;
         this.description = description;
         this.schedule = sch;
+        this.color = Optional.empty();
+    }
+
+    public ThemeTransfer(String name, String description, LocalDate start, LocalDate end) {
+        this.name = name;
+        this.description = description;
+        this.schedule = new ThemeSchedule(start, end);
         this.color = Optional.empty();
     }
 

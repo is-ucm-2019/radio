@@ -38,4 +38,9 @@ public class ThemeWindow implements ApplicationWindow {
     public JPanel getPanelHandler() {
         return containerPanel;
     }
+
+    public void willShow() {
+        this.calendarView.willShow();
+        this.allThemesView.willShow();
+    }
 }

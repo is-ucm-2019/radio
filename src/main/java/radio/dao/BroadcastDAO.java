@@ -1,9 +1,11 @@
 package radio.dao;
 
 import radio.core.Broadcast;
+import radio.core.Theme;
 import radio.transfer.BroadcastTransfer;
 import radio.transfer.ProgramTransfer;
 import radio.util.BroadcastTime;
+import radio.util.ThemeSchedule;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
     private TreeMap<String, TreeMap<LocalDateTime, Broadcast>> db = new TreeMap<>();
@@ -20,6 +24,18 @@ public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
     @Override
     public boolean exists(BroadcastTransfer el) {
         return this.db.containsKey(el.parent.title);
+    }
+
+    public void update(BroadcastTransfer el) {
+        if (!exists(el)) {
+            return;
+        }
+
+        // Get the corresponding Broadcast object,
+        // and overwrite the map with a new instance
+        TreeMap<LocalDateTime, Broadcast> ourMap = db.get(el.parent.title);
+        ourMap.put(el.schedule.getStart(), new Broadcast(el));
+        db.put(el.parent.title, ourMap);
     }
 
     // FIXME(borja): Could build other structure to check overlaps faster
@@ -37,7 +53,7 @@ public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
 
     @Override
     public void persist(BroadcastTransfer el) {
-        Broadcast b = new Broadcast(el.parent.title, el.schedule);
+        Broadcast b = new Broadcast(el);
         TreeMap<LocalDateTime, Broadcast> list;
         if (exists(el)) {
             list = db.get(el.parent.title);
@@ -104,7 +120,15 @@ public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
         return l;
     }
 
-    // TODO(borja): Implement loadForRage(LocalDate first, LocalDate last)
-    // figure out how to deal with not having the programs
-    // maybe pass the entire range of programs to this?
+    public Stream<BroadcastTransfer> loadForRange(ProgramTransfer p, ThemeSchedule sched) {
+            if (this.db.containsKey(p.title)) {
+                return this.db.get(p.title)
+                           .values()
+                           .stream()
+                           .filter(br -> sched.shouldAffect(br.getSchedule()))
+                           .map(br -> new BroadcastTransfer(p, br));
+            }
+
+            return Stream.empty();
+    }
 }

@@ -1,8 +1,8 @@
 package radio.ui;
 
-
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
 public class MainWindow {
     private JFrame holderFrame;
@@ -12,26 +12,14 @@ public class MainWindow {
     private String frameTitle;
     private MainController controller;
 
-    private ApplicationPanel activePanel;
-    private ApplicationWindow loginWindow;
-    private ApplicationWindow landingWindow;
-    private ApplicationWindow planningWindow;
-    private ApplicationWindow eventsWindow;
-    private ApplicationWindow themesWindow;
-
     public MainWindow(MainController controller) {
         frameTitle = "Radio Enterprises Inc.";
+
         this.switcherLayout = new CardLayout();
         this.holderFrame = new JFrame();
         this.switcherPanel = new JPanel(switcherLayout);
 
         this.controller = controller;
-        this.activePanel = ApplicationPanel.LOGIN;
-        this.loginWindow = new LoginWindow(controller);
-        this.landingWindow = new LandingWindow(controller);
-        this.planningWindow = new PlanningWindow(controller);
-        this.eventsWindow = new EventsWindow(controller);
-        this.themesWindow = new ThemeWindow(controller);
 
         initUI();
     }
@@ -49,9 +37,8 @@ public class MainWindow {
 
     }
 
-    void switchCards(ApplicationPanel toShow, String description) {
+    private void switchCards(ApplicationPanel toShow, String description) {
         this.holderFrame.setTitle(description);
-        this.activePanel = toShow;
         this.switcherLayout.show(switcherPanel, toShow.name());
     }
 
@@ -66,13 +53,13 @@ public class MainWindow {
         holderFrame.setTitle(this.frameTitle);
         holderFrame.setLayout(new BorderLayout());
 
-        switcherPanel.add(this.loginWindow.getPanelHandler(), ApplicationPanel.LOGIN.name());
-        switcherPanel.add(this.landingWindow.getPanelHandler(), ApplicationPanel.LANDING.name());
-        switcherPanel.add(this.planningWindow.getPanelHandler(), ApplicationPanel.PLANNING.name());
-        switcherPanel.add(this.eventsWindow.getPanelHandler(), ApplicationPanel.EVENTS.name());
-        switcherPanel.add(this.themesWindow.getPanelHandler(), ApplicationPanel.THEMES.name());
+        for(Map.Entry<ApplicationPanel, ApplicationWindow> entry : controller.getViewMap().entrySet()) {
+            switcherPanel.add(entry.getValue().getPanelHandler(), entry.getKey().name());
+        }
+
         holderFrame.add(switcherPanel, BorderLayout.CENTER);
         holderFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        switchCards(ApplicationPanel.LOGIN);
     }
 
     public void enable() {

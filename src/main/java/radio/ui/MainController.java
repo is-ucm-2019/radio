@@ -4,14 +4,35 @@ import radio.core.Core;
 import radio.util.TimeUtil;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observer;
+import java.util.Optional;
 
 public class MainController {
     private MainWindow frame;
+    private HashMap<ApplicationPanel, ApplicationWindow> viewMap;
+
     Core core;
 
     public MainController(Core core) {
         this.core = core;
+        viewMap = null;
+    }
+
+    Map<ApplicationPanel, ApplicationWindow> getViewMap() {
+        // Lazy load viewMap, allows controller to be instantiated before
+        // binding it to the views
+        if (viewMap == null) {
+            viewMap = new HashMap<>();
+            viewMap.put(ApplicationPanel.LOGIN, new LoginWindow(this));
+            viewMap.put(ApplicationPanel.LANDING, new LandingWindow(this));
+            viewMap.put(ApplicationPanel.PLANNING, new PlanningWindow(this));
+            viewMap.put(ApplicationPanel.EVENTS, new EventsWindow(this));
+            viewMap.put(ApplicationPanel.THEMES, new ThemeWindow(this));
+        }
+
+        return viewMap;
     }
 
     public void addView(MainWindow frame) {
@@ -30,11 +51,12 @@ public class MainController {
     }
 
     void swapWindow(ApplicationPanel panel) {
-        if (panel == ApplicationPanel.PLANNING) {
-            this.core.loadPlanningInfo(TimeUtil.firstDayOfWeekFrom(LocalDate.now()));
-        }
-
+        getWindow(panel).ifPresent(ApplicationWindow::willShow);
         frame.switchCards(panel);
+    }
+
+    private Optional<ApplicationWindow> getWindow(ApplicationPanel panel) {
+        return Optional.ofNullable(viewMap.get(panel));
     }
 
     void quitEvent() {

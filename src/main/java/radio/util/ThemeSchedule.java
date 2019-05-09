@@ -29,4 +29,8 @@ public class ThemeSchedule implements Comparable<ThemeSchedule> {
     public LocalDate getStart() {
         return internal.getStart().toLocalDate();
     }
+
+    public LocalDate getEnd() {
+        return internal.getEnd().toLocalDate();
+    }
 }

@@ -1,9 +1,9 @@
 package radio.core;
 
+import radio.transfer.BroadcastTransfer;
 import radio.util.BroadcastTime;
 
-import java.time.LocalDateTime;
-
+// TODO(borja): Add themes
 public class Broadcast {
     private String parentTitle;
     private BroadcastTime schedule;
@@ -13,7 +13,16 @@ public class Broadcast {
         this.schedule = sched;
     }
 
+    public Broadcast(BroadcastTransfer tr) {
+        this.parentTitle = tr.parent.title;
+        this.schedule = tr.schedule;
+    }
+
     public BroadcastTime getSchedule() {
         return schedule;
+    }
+
+    public String getParentTitle() {
+        return parentTitle;
     }
 }

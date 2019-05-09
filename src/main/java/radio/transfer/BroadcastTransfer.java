@@ -5,6 +5,7 @@ import radio.util.BroadcastTime;
 
 import java.time.LocalDateTime;
 
+// TODO(borja): Add themes
 public final class BroadcastTransfer {
     public final ProgramTransfer parent;
     public final BroadcastTime schedule;

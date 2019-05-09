@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class ThemeDAO implements AppDAO<ThemeTransfer> {
     private HashSet<String> ids = new HashSet<>();
@@ -36,10 +37,9 @@ public class ThemeDAO implements AppDAO<ThemeTransfer> {
         }
     }
 
-    // TODO(borja): Implement
     @Override
     public List<ThemeTransfer> loadAll() {
-        throw new UnsupportedOperationException();
+        return db.stream().map(ThemeTransfer::new).collect(Collectors.toList());
     }
 
     // TODO(borja): Implement

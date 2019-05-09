@@ -71,8 +71,8 @@ public class NewThemeDialog extends JDialog implements ApplicationWindow {
 
         // Get date with current year, will change later
         LocalDate now = LocalDate.now();
-        LocalDate startDate = now.withMonth(startMonthIdx+1).withDayOfMonth(startDayIdx + 1);
-        LocalDate endDate = now.withMonth(endMonthIdx+1).withDayOfMonth(endDayIdx+1);
+        LocalDate startDate = now.withMonth(startMonthIdx + 1).withDayOfMonth(startDayIdx + 1);
+        LocalDate endDate = now.withMonth(endMonthIdx + 1).withDayOfMonth(endDayIdx + 1);
 
         if (startDate.isBefore(now)) {
             showSync("Can't schedule theme for a past time");
@@ -85,7 +85,7 @@ public class NewThemeDialog extends JDialog implements ApplicationWindow {
             return;
         }
 
-        SwingUtilities.invokeLater(() -> controller.addThemeEvent(themeName, descr, startDate, endDate));
+        SwingUtilities.invokeLater(() -> controller.validateTheme(themeName, descr, startDate, endDate));
         dispose();
     }
 

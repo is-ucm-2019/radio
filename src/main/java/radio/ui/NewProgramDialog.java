@@ -39,7 +39,6 @@ public class NewProgramDialog extends JDialog implements ApplicationWindow {
             return;
         }
 
-        // FIXME(borja): Figure out a way to keep the dialog open even if program exists
         SwingUtilities.invokeLater(() -> controller.addProgramEvent(this.titleField.getText(), this.descriptionArea.getText(), colorChooser.getColor()));
         dispose();
     }

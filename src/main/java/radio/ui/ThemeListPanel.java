@@ -3,6 +3,10 @@ package radio.ui;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import radio.actions.ChooseBroadcasts;
+import radio.actions.ShowThemeList;
+import radio.actions.UpdateThemeList;
+import radio.transfer.ThemeTransfer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,8 +21,9 @@ public class ThemeListPanel implements ApplicationWindow, Observer {
     private JTextField searchField;
     private JButton searchButton;
     private JScrollPane listPane;
-    private JList themeListPanel;
+    private JList<String> themeListPanel;
 
+    private DefaultListModel<String> listModel;
     private ThemesController controller;
 
     ThemeListPanel(ThemesController cont) {
@@ -39,6 +44,7 @@ public class ThemeListPanel implements ApplicationWindow, Observer {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
+        createUIComponents();
         background = new JPanel();
         background.setLayout(new BorderLayout(0, 0));
         searchPane = new JPanel();
@@ -56,7 +62,6 @@ public class ThemeListPanel implements ApplicationWindow, Observer {
         searchPane.add(spacer1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         listPane = new JScrollPane();
         background.add(listPane, BorderLayout.CENTER);
-        themeListPanel = new JList();
         listPane.setViewportView(themeListPanel);
     }
 
@@ -69,11 +74,47 @@ public class ThemeListPanel implements ApplicationWindow, Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        if (!getPanelHandler().isShowing()) {
+            return;
+        }
 
+        if (arg instanceof UpdateThemeList) {
+            updateThemeList((UpdateThemeList) arg);
+        } else if (arg instanceof ChooseBroadcasts) {
+            showThemeBroadcasts((ChooseBroadcasts) arg);
+        } else if (arg instanceof ShowThemeList) {
+            updateThemeList((ShowThemeList) arg);
+        }
+    }
+
+    private void updateThemeList(UpdateThemeList msg) {
+        listModel.addElement(msg.tr.name);
+    }
+
+    private void updateThemeList(ShowThemeList msg) {
+        listModel.clear();
+        for (ThemeTransfer tr : msg.tr) {
+            listModel.addElement(tr.name);
+        }
+    }
+
+    private void showThemeBroadcasts(ChooseBroadcasts msg) {
+        ChooseThemeBroadcasts dialog = new ChooseThemeBroadcasts(controller, msg.tr, msg.includedBroadcasts);
+        dialog.pack();
+        dialog.setVisible(true);
     }
 
     @Override
     public JPanel getPanelHandler() {
         return (JPanel) $$$getRootComponent$$$();
+    }
+
+    private void createUIComponents() {
+        this.listModel = new DefaultListModel<>();
+        themeListPanel = new JList<>(listModel);
+    }
+
+    public void willShow() {
+        SwingUtilities.invokeLater(() -> controller.getAllThemes());
     }
 }

@@ -24,7 +24,6 @@ class PlanningController {
         }
     }
 
-    // FIXME(borja): Need to check if schedule is taken
     void addBroadcastEvent(String name, LocalDateTime start, LocalDateTime end) {
         Optional<ProgramTransfer> pt = this.parentController.core.programFromName(name);
         if (!pt.isPresent()) {

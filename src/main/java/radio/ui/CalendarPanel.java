@@ -66,7 +66,10 @@ public class CalendarPanel implements ApplicationWindow, Observer {
             firstOfWeek = TimeUtil.firstDayOfWeekFrom(LocalDate.now());
             SwingUtilities.invokeLater(() -> controller.getEventsForWeekStartingAt(firstOfWeek));
         });
+    }
 
+    public void willShow() {
+        SwingUtilities.invokeLater(() -> controller.getEventsForWeekStartingAt(firstOfWeek));
     }
 
     private void clearCalendar() {
