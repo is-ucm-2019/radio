@@ -114,5 +114,8 @@ public class Core extends Observable {
         }
 
         this.themeDAO.persist(tr);
+
+        this.setChanged();
+        this.notifyObservers(new UpdateThemeList(tr));
     }
 }
