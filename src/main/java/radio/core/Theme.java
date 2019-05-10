@@ -8,6 +8,7 @@ import java.util.Optional;
 public class Theme implements Comparable<Theme> {
     private String name;
     private String description;
+    // FIXME(borja): Optional is not serializable
     private Optional<Color> color;
     private ThemeSchedule schedule;
 

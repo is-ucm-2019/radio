@@ -18,17 +18,18 @@ public class LoginWindow implements ApplicationWindow {
     private JPanel buttonPanel;
 
     private MainController controller;
-    private Action enterCb = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            controller.loginEvent(usernameField.getText(), String.valueOf(passwordField.getPassword()));
-            usernameField.setText(null);
-            passwordField.setText(null);
-        }
-    };
 
     public LoginWindow(MainController controller) {
         this.controller = controller;
+
+        Action enterCb = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.loginEvent(usernameField.getText(), String.valueOf(passwordField.getPassword()));
+                usernameField.setText(null);
+                passwordField.setText(null);
+            }
+        };
 
         loginButton.addActionListener(enterCb);
         usernameField.addActionListener(enterCb);

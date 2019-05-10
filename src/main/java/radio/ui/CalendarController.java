@@ -2,6 +2,6 @@ package radio.ui;
 
 import java.time.LocalDate;
 
-public interface CalendarController {
+interface CalendarController {
     void getEventsForWeekStartingAt(LocalDate start);
 }

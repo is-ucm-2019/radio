@@ -1,7 +1,6 @@
 package radio.dao;
 
 import radio.core.Broadcast;
-import radio.core.Theme;
 import radio.transfer.BroadcastTransfer;
 import radio.transfer.ProgramTransfer;
 import radio.util.BroadcastTime;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BroadcastDAO implements AppDAO<BroadcastTransfer> {

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class ThemeSchedule implements Comparable<ThemeSchedule> {
-    BroadcastTime internal;
+    private BroadcastTime internal;
 
     public ThemeSchedule(LocalDate startDate, LocalDate endDate) throws IllegalArgumentException {
         LocalTime startTime = LocalTime.of(0,0);

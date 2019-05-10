@@ -2,7 +2,6 @@ package radio.ui.musiclibrary;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import javafx.scene.control.SelectionMode;
 import radio.actions.ShowSongList;
 import radio.actions.UpdateSongList;
 import radio.transfer.SongTransfer;

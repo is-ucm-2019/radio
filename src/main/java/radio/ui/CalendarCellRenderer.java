@@ -9,7 +9,7 @@ import java.awt.*;
 
 // Cell renderer for the calendar view.
 // Depending on the container, it will return a new rendering (broadcasts or events)
-public class CalendarCellRenderer extends DefaultTableCellRenderer {
+class CalendarCellRenderer extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel component = new JLabel();
         component.setOpaque(true);

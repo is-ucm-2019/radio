@@ -2,7 +2,6 @@ package radio.ui;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import radio.ui.settings.SettingsDialog;
 
 import javax.swing.*;
 import java.awt.*;

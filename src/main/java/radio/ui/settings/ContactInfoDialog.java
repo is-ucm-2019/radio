@@ -7,7 +7,6 @@ import radio.ui.ApplicationWindow;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class ContactInfoDialog extends JDialog implements ApplicationWindow {
 
