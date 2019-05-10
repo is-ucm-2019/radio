@@ -7,8 +7,6 @@ import radio.ui.ApplicationWindow;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class SettingsDialog extends JDialog implements ApplicationWindow {
     private JPanel contentPane;

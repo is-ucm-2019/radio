@@ -16,7 +16,7 @@ public class MenuPanel implements ApplicationWindow {
     private JPanel ticketPanel;
     private JPanel background;
 
-    MenuPanel(MainController cont) {
+    public MenuPanel(MainController cont) {
         $$$setupUI$$$();
         menuButton.addActionListener(e -> cont.swapWindow(ApplicationPanel.LANDING));
         settingsButton.addActionListener(e -> cont.showSettings());

@@ -1,10 +1,9 @@
 package radio.ui;
 
 import radio.core.Core;
+import radio.ui.musiclibrary.MusicLibraryWindow;
 import radio.ui.settings.SettingsDialog;
-import radio.util.TimeUtil;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observer;
@@ -32,6 +31,7 @@ public class MainController {
             viewMap.put(ApplicationPanel.EVENTS, new EventsWindow(this));
             viewMap.put(ApplicationPanel.THEMES, new ThemeWindow(this));
             viewMap.put(ApplicationPanel.PLAYLISTS, new PlaylistWindow(this));
+            viewMap.put(ApplicationPanel.MUSIC_ARCHIVE, new MusicLibraryWindow(this));
         }
 
         return viewMap;
@@ -71,7 +71,7 @@ public class MainController {
         frame.quit();
     }
 
-    void addObserver(Observer o) {
+    public void addObserver(Observer o) {
         this.core.dispatchObserver(o);
     }
 

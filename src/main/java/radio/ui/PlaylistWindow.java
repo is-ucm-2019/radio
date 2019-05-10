@@ -27,12 +27,6 @@ public class PlaylistWindow implements ApplicationWindow {
 
     PlaylistWindow(MainController controller) {
         this.controller = controller;
-        this.menuView = new MenuPanel(this.controller);
-
-        initUI();
-    }
-
-    private void initUI() {
         $$$setupUI$$$();
         deleteButton.addActionListener(e -> confirmPlaylistDeletion());
     }
@@ -111,6 +105,7 @@ public class PlaylistWindow implements ApplicationWindow {
     }
 
     private void createUIComponents() {
+        this.menuView = new MenuPanel(this.controller);
         this.listModel = new DefaultListModel<>();
         playlistList = new JList<>(listModel);
         playlistList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

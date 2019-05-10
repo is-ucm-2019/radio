@@ -2,19 +2,15 @@ package radio.core;
 
 import radio.actions.*;
 import radio.core.users.User;
-import radio.dao.BroadcastDAO;
-import radio.dao.ProgramDAO;
-import radio.dao.ThemeDAO;
+import radio.dao.*;
 import radio.transfer.BroadcastTransfer;
 import radio.transfer.ProgramTransfer;
+import radio.transfer.SongTransfer;
 import radio.transfer.ThemeTransfer;
 import radio.util.ThemeSchedule;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Core extends Observable {
@@ -22,11 +18,13 @@ public class Core extends Observable {
     private ProgramDAO programDAO;
     private BroadcastDAO broadcastDAO;
     private ThemeDAO themeDAO;
+    private SongDAO songDAO;
 
     public Core() {
         programDAO = new ProgramDAO();
         broadcastDAO = new BroadcastDAO();
         themeDAO = new ThemeDAO();
+        songDAO = new SongDAO();
     }
 
     public void dispatchObserver(Observer obs) {
@@ -117,5 +115,32 @@ public class Core extends Observable {
 
         this.setChanged();
         this.notifyObservers(new UpdateThemeList(tr));
+    }
+
+    public boolean songExists(SongTransfer transfer) {
+        return songDAO.exists(transfer);
+    }
+
+    public void saveSong(SongTransfer transfer) {
+        songDAO.persist(transfer);
+        this.setChanged();
+        this.notifyObservers(new UpdateSongList(transfer));
+    }
+
+    public void loadSongInfo() {
+        this.setChanged();
+        this.notifyObservers(new ShowSongList(this.songDAO.loadAll()));
+    }
+
+    public void searchSongDetails(String title, String author, String album, int year) {
+        List<SongTransfer> matches = SongService.findMatches(title, author, album, year);
+        if (matches.isEmpty()) {
+            System.out.println("No songs found");
+            this.setChanged();
+            this.notifyObservers(new EmptySongMatchError());
+        } else {
+            this.setChanged();
+            this.notifyObservers(new ShowSongMatch(matches));
+        }
     }
 }
