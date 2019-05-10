@@ -2,7 +2,7 @@ package radio.ui;
 
 import javax.swing.*;
 
-public interface ApplicationWindow {
+public interface IApplicationWindow {
     JPanel getPanelHandler();
 
     // Executed when window is about to be shown to the user

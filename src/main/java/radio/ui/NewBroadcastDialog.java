@@ -13,7 +13,7 @@ import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class NewBroadcastDialog extends JDialog implements ApplicationWindow {
+public class NewBroadcastDialog extends JDialog implements IApplicationWindow {
 
     private JPanel contentPane;
     private JButton buttonOK;

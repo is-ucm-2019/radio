@@ -6,7 +6,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import javax.swing.*;
 import java.awt.*;
 
-public class ContentListPanel implements ApplicationWindow {
+public class ContentListPanel implements IApplicationWindow {
     private JPanel background;
     private JTextField searchField;
     private JButton searchButton;

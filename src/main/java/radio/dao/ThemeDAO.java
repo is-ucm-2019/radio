@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-public class ThemeDAO implements AppDAO<ThemeTransfer> {
+public class ThemeDAO implements IAppDAO<ThemeTransfer> {
     private HashSet<String> ids = new HashSet<>();
     private TreeSet<Theme> db = new TreeSet<>();
 

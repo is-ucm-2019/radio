@@ -20,7 +20,7 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
-public class CalendarPanel implements ApplicationWindow, Observer {
+public class CalendarPanel implements IApplicationWindow, Observer {
 
     private TableColumnModel columnHeaderModel;
     private LocalDate firstOfWeek;
@@ -34,9 +34,9 @@ public class CalendarPanel implements ApplicationWindow, Observer {
     private JScrollPane holderPane;
     private JButton todayButton;
 
-    private CalendarController controller;
+    private ICalendarController controller;
 
-    CalendarPanel(CalendarController controller) {
+    CalendarPanel(ICalendarController controller) {
         $$$setupUI$$$();
 
         this.controller = controller;

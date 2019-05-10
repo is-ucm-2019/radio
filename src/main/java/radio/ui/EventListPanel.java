@@ -3,7 +3,7 @@ package radio.ui;
 import javax.swing.*;
 import java.awt.*;
 
-public class EventListPanel implements ApplicationWindow {
+public class EventListPanel implements IApplicationWindow {
     private JPanel background;
     private JList eventPanel;
     private JButton newEventButton;

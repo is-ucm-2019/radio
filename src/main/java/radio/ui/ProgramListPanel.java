@@ -14,7 +14,7 @@ import java.awt.event.MouseEvent;
 import java.util.Observable;
 import java.util.Observer;
 
-public class ProgramListPanel implements ApplicationWindow, Observer {
+public class ProgramListPanel implements IApplicationWindow, Observer {
 
     private JPanel background;
     // FIXME(borja): This list should probably contain JPanel

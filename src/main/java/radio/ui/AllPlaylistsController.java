@@ -1,6 +1,6 @@
 package radio.ui;
 
-public class AllPlaylistsController implements ContentListController {
+public class AllPlaylistsController implements IContentListController {
 
     private MainController controller;
 

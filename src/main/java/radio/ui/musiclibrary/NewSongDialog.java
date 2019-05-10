@@ -6,7 +6,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import radio.actions.EmptySongMatchError;
 import radio.actions.ShowSongMatch;
 import radio.transfer.SongTransfer;
-import radio.ui.ApplicationWindow;
+import radio.ui.IApplicationWindow;
 import radio.ui.MusicLibraryController;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.function.Consumer;
 
-public class NewSongDialog extends JDialog implements ApplicationWindow, Observer {
+public class NewSongDialog extends JDialog implements IApplicationWindow, Observer {
 
     private JPanel contentPane;
     private JButton cancel;

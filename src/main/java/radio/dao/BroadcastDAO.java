@@ -16,7 +16,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
-public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
+public class BroadcastDAO implements IAppDAO<BroadcastTransfer> {
     private TreeMap<String, TreeMap<LocalDateTime, Broadcast>> db = new TreeMap<>();
 
     @Override

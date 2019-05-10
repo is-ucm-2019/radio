@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public class LoginWindow implements ApplicationWindow {
+public class LoginWindow implements IApplicationWindow {
     private JPanel background;
     private JButton loginButton;
     private JButton quitButton;

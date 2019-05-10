@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Arrays;
 
-public class NewThemeDialog extends JDialog implements ApplicationWindow {
+public class NewThemeDialog extends JDialog implements IApplicationWindow {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;

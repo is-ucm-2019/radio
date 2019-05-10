@@ -5,7 +5,7 @@ import radio.transfer.SongTransfer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SongDAO implements AppDAO<SongTransfer> {
+public class SongDAO implements IAppDAO<SongTransfer> {
 
     @Override
     public boolean exists(SongTransfer el) {

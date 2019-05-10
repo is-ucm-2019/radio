@@ -3,14 +3,14 @@ package radio.ui;
 import javax.swing.*;
 import java.awt.*;
 
-public class EventsWindow implements ApplicationWindow {
+public class EventsWindow implements IApplicationWindow {
 
     private MainController controller;
     private JPanel containerPanel;
 
-    private ApplicationWindow menuView;
-    private ApplicationWindow calendarView;
-    private ApplicationWindow allEventsView;
+    private IApplicationWindow menuView;
+    private IApplicationWindow calendarView;
+    private IApplicationWindow allEventsView;
 
     EventsWindow(MainController controller) {
         this.controller = controller;

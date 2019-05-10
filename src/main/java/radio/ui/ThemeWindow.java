@@ -3,12 +3,12 @@ package radio.ui;
 import javax.swing.*;
 import java.awt.*;
 
-public class ThemeWindow implements ApplicationWindow {
+public class ThemeWindow implements IApplicationWindow {
 
     private MainController controller;
     private JPanel containerPanel;
 
-    private ApplicationWindow menuView;
+    private IApplicationWindow menuView;
     private CalendarPanel calendarView;
     private ThemeListPanel allThemesView;
 

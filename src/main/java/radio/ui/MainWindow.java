@@ -53,7 +53,7 @@ public class MainWindow {
         holderFrame.setTitle(this.frameTitle);
         holderFrame.setLayout(new BorderLayout());
 
-        for (Map.Entry<ApplicationPanel, ApplicationWindow> entry : controller.getViewMap().entrySet()) {
+        for (Map.Entry<ApplicationPanel, IApplicationWindow> entry : controller.getViewMap().entrySet()) {
             switcherPanel.add(entry.getValue().getPanelHandler(), entry.getKey().name());
         }
 

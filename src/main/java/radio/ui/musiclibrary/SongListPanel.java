@@ -5,7 +5,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import radio.actions.ShowSongList;
 import radio.actions.UpdateSongList;
 import radio.transfer.SongTransfer;
-import radio.ui.ApplicationWindow;
+import radio.ui.IApplicationWindow;
 import radio.ui.MusicLibraryController;
 
 import javax.swing.*;
@@ -13,7 +13,7 @@ import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
-public class SongListPanel implements ApplicationWindow, Observer {
+public class SongListPanel implements IApplicationWindow, Observer {
     private JTextField searchField;
     private JButton addSong;
     private JList<String> songList;

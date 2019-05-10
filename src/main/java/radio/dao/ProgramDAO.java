@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public class ProgramDAO implements AppDAO<ProgramTransfer> {
+public class ProgramDAO implements IAppDAO<ProgramTransfer> {
     private TreeMap<String, Program> db;
 
     public ProgramDAO() {

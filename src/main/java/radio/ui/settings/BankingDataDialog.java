@@ -3,7 +3,7 @@ package radio.ui.settings;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import radio.ui.ApplicationWindow;
+import radio.ui.IApplicationWindow;
 import radio.util.TimeUtil;
 
 import javax.swing.*;
@@ -12,7 +12,7 @@ import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.util.Arrays;
 
-public class BankingDataDialog extends JDialog implements ApplicationWindow {
+public class BankingDataDialog extends JDialog implements IApplicationWindow {
 
     private JPanel contentPane;
     private JButton buttonOK;

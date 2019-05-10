@@ -2,7 +2,7 @@ package radio.dao;
 
 import java.util.List;
 
-interface AppDAO<T> {
+interface IAppDAO<T> {
     boolean exists(T el);
 
     void persist(T el);

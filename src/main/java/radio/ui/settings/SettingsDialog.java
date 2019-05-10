@@ -3,12 +3,12 @@ package radio.ui.settings;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import radio.ui.ApplicationWindow;
+import radio.ui.IApplicationWindow;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class SettingsDialog extends JDialog implements ApplicationWindow {
+public class SettingsDialog extends JDialog implements IApplicationWindow {
     private JPanel contentPane;
     private JButton buttonCancel;
     private JButton contactButton;

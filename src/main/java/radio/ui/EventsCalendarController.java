@@ -2,7 +2,7 @@ package radio.ui;
 
 import java.time.LocalDate;
 
-public class EventsCalendarController implements CalendarController {
+public class EventsCalendarController implements ICalendarController {
     private MainController parentController;
 
     EventsCalendarController(MainController cont) {

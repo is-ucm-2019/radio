@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class MainController {
     private MainWindow frame;
-    private HashMap<ApplicationPanel, ApplicationWindow> viewMap;
+    private HashMap<ApplicationPanel, IApplicationWindow> viewMap;
 
     Core core;
 
@@ -20,7 +20,7 @@ public class MainController {
         viewMap = null;
     }
 
-    Map<ApplicationPanel, ApplicationWindow> getViewMap() {
+    Map<ApplicationPanel, IApplicationWindow> getViewMap() {
         // Lazy load viewMap, allows controller to be instantiated before
         // binding it to the views
         if (viewMap == null) {
@@ -59,11 +59,11 @@ public class MainController {
     }
 
     void swapWindow(ApplicationPanel panel) {
-        getWindow(panel).ifPresent(ApplicationWindow::willShow);
+        getWindow(panel).ifPresent(IApplicationWindow::willShow);
         frame.switchCards(panel);
     }
 
-    private Optional<ApplicationWindow> getWindow(ApplicationPanel panel) {
+    private Optional<IApplicationWindow> getWindow(ApplicationPanel panel) {
         return Optional.ofNullable(viewMap.get(panel));
     }
 

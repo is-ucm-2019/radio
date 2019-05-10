@@ -3,12 +3,12 @@ package radio.ui;
 import javax.swing.*;
 import java.awt.*;
 
-public class PlanningWindow implements ApplicationWindow {
+public class PlanningWindow implements IApplicationWindow {
 
     private MainController controller;
     private JPanel containerPanel;
 
-    private ApplicationWindow menuView;
+    private IApplicationWindow menuView;
     private CalendarPanel calendarView;
     private ProgramListPanel allProgramsView;
 

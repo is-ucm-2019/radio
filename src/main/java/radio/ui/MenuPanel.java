@@ -6,7 +6,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import javax.swing.*;
 import java.awt.*;
 
-public class MenuPanel implements ApplicationWindow {
+public class MenuPanel implements IApplicationWindow {
 
     private JButton menuButton;
     private JButton newTicket;

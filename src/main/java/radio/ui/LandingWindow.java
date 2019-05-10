@@ -6,7 +6,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import javax.swing.*;
 import java.awt.*;
 
-public class LandingWindow implements ApplicationWindow {
+public class LandingWindow implements IApplicationWindow {
     private JPanel background;
 
     private JButton tematicaButton;

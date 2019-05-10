@@ -1,6 +1,6 @@
 package radio.ui;
 
-public interface ContentListController {
+public interface IContentListController {
     String getWindowTitle();
 
     void searchEvent(String query);

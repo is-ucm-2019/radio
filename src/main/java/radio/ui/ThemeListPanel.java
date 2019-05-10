@@ -13,7 +13,7 @@ import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
-public class ThemeListPanel implements ApplicationWindow, Observer {
+public class ThemeListPanel implements IApplicationWindow, Observer {
 
     private JPanel background;
     private JPanel searchPane;

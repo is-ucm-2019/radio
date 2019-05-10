@@ -7,7 +7,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import javax.swing.*;
 import java.awt.*;
 
-public class PlaylistWindow implements ApplicationWindow {
+public class PlaylistWindow implements IApplicationWindow {
     private JPanel panel1;
     private JList<String> playlistList;
     // TODO(borja): show songs

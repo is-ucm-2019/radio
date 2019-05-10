@@ -8,7 +8,7 @@ import javax.swing.*;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import java.awt.*;
 
-public class NewProgramDialog extends JDialog implements ApplicationWindow {
+public class NewProgramDialog extends JDialog implements IApplicationWindow {
 
     private JPanel contentPane;
     private JButton buttonOK;

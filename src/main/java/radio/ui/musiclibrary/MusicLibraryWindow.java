@@ -2,7 +2,7 @@ package radio.ui.musiclibrary;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import radio.ui.ApplicationWindow;
+import radio.ui.IApplicationWindow;
 import radio.ui.MainController;
 import radio.ui.MenuPanel;
 import radio.ui.MusicLibraryController;
@@ -10,7 +10,7 @@ import radio.ui.MusicLibraryController;
 import javax.swing.*;
 import java.awt.*;
 
-public class MusicLibraryWindow implements ApplicationWindow {
+public class MusicLibraryWindow implements IApplicationWindow {
 
     private JPanel background;
     private MenuPanel menuView;
