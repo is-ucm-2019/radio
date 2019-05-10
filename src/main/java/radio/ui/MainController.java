@@ -31,6 +31,7 @@ public class MainController {
             viewMap.put(ApplicationPanel.PLANNING, new PlanningWindow(this));
             viewMap.put(ApplicationPanel.EVENTS, new EventsWindow(this));
             viewMap.put(ApplicationPanel.THEMES, new ThemeWindow(this));
+            viewMap.put(ApplicationPanel.PLAYLISTS, new PlaylistWindow(this));
         }
 
         return viewMap;
