@@ -1,6 +1,7 @@
 package radio.ui;
 
 import radio.core.Core;
+import radio.ui.settings.SettingsDialog;
 import radio.util.TimeUtil;
 
 import java.time.LocalDate;
@@ -37,6 +38,12 @@ public class MainController {
 
     public void addView(MainWindow frame) {
         this.frame = frame;
+    }
+
+    void showSettings() {
+        SettingsDialog dialog = new SettingsDialog();
+        dialog.pack();
+        dialog.setVisible(true);
     }
 
     // FIXME(borja): Validate combo

@@ -2,21 +2,24 @@ package radio.ui;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import radio.ui.settings.SettingsDialog;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MenuPanel implements ApplicationWindow {
+
     private JButton menuButton;
     private JButton newTicket;
     private JButton viewTickets;
-    private JButton contactInfo;
+    private JButton settingsButton;
     private JPanel ticketPanel;
     private JPanel background;
 
     MenuPanel(MainController cont) {
         $$$setupUI$$$();
         menuButton.addActionListener(e -> cont.swapWindow(ApplicationPanel.LANDING));
+        settingsButton.addActionListener(e -> cont.showSettings());
     }
 
     /**
@@ -41,9 +44,9 @@ public class MenuPanel implements ApplicationWindow {
         viewTickets = new JButton();
         viewTickets.setText("Consultar Incidencias");
         ticketPanel.add(viewTickets, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        contactInfo = new JButton();
-        contactInfo.setText("Datos de Contacto");
-        ticketPanel.add(contactInfo, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        settingsButton = new JButton();
+        settingsButton.setText("Ajustes");
+        ticketPanel.add(settingsButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
