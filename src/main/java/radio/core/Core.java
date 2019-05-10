@@ -86,11 +86,11 @@ public class Core extends Observable {
     public void validateTheme(ThemeTransfer tr) {
         ThemeSchedule sched = tr.schedule;
         List<BroadcastTransfer> l = this.programDAO
-                                        .loadAll()
-                                        .stream()
-                                        .flatMap(program ->
-                                                    this.broadcastDAO.loadForRange(program, sched))
-                                        .collect(Collectors.toList());
+                .loadAll()
+                .stream()
+                .flatMap(program ->
+                        this.broadcastDAO.loadForRange(program, sched))
+                .collect(Collectors.toList());
 
         if (l.isEmpty()) {
             System.out.println("No theme overlap!");

@@ -51,7 +51,7 @@ public class Theme implements Comparable<Theme> {
 
         int sameName = this.name.compareTo(o.name);
         if (sameName != 0) {
-            return  sameName;
+            return sameName;
         }
 
         return this.description.compareTo(o.description);

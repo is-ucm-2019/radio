@@ -43,7 +43,7 @@ public class MainWindow {
     }
 
     void quit() {
-        if(JOptionPane.showConfirmDialog(null, "Really exit?", "Exit", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(null, "Really exit?", "Exit", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             // Shut down controller
             System.exit(0);
         }
@@ -53,7 +53,7 @@ public class MainWindow {
         holderFrame.setTitle(this.frameTitle);
         holderFrame.setLayout(new BorderLayout());
 
-        for(Map.Entry<ApplicationPanel, ApplicationWindow> entry : controller.getViewMap().entrySet()) {
+        for (Map.Entry<ApplicationPanel, ApplicationWindow> entry : controller.getViewMap().entrySet()) {
             switcherPanel.add(entry.getValue().getPanelHandler(), entry.getKey().name());
         }
 

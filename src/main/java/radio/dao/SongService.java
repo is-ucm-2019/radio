@@ -40,7 +40,7 @@ public class SongService {
 
         for (int i = 0; i <= matchSize; i++) {
             SongDuration runningTime = new SongDuration(rand.nextInt(0, 6),
-                                                        rand.nextInt(1, 59));
+                    rand.nextInt(1, 59));
 
             String matchTitle = songF.get(rand.nextInt(songF.size())).apply(title);
             String matchAlbum = albumF.get(rand.nextInt(albumF.size())).apply(album);

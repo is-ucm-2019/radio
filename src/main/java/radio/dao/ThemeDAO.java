@@ -20,7 +20,7 @@ public class ThemeDAO implements AppDAO<ThemeTransfer> {
 
     private Theme forTransfer(ThemeTransfer el) {
         return el.color.map(color -> new Theme(el.name, el.description, el.schedule, color))
-                       .orElseGet(() -> new Theme(el.name, el.description, el.schedule));
+                .orElseGet(() -> new Theme(el.name, el.description, el.schedule));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class ThemeDAO implements AppDAO<ThemeTransfer> {
 
     @Override
     public void delete(ThemeTransfer el) {
-        if(exists(el)) {
+        if (exists(el)) {
             db.remove(forTransfer(el));
         }
     }

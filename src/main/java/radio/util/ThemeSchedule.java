@@ -8,7 +8,7 @@ public class ThemeSchedule implements Comparable<ThemeSchedule> {
     private BroadcastTime internal;
 
     public ThemeSchedule(LocalDate startDate, LocalDate endDate) throws IllegalArgumentException {
-        LocalTime startTime = LocalTime.of(0,0);
+        LocalTime startTime = LocalTime.of(0, 0);
         LocalTime endTime = LocalTime.of(23, 59);
         this.internal = new BroadcastTime(LocalDateTime.of(startDate, startTime), LocalDateTime.of(endDate, endTime));
     }

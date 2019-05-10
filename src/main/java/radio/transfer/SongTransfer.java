@@ -22,11 +22,11 @@ public class SongTransfer {
 
     public String toString() {
         return String.format("[%s]: %s — %s — %s (%s) [%s]",
-                             license.toString(),
-                             title,
-                             author,
-                             album,
-                             year,
-                             duration.toString());
+                license.toString(),
+                title,
+                author,
+                album,
+                year,
+                duration.toString());
     }
 }

@@ -39,7 +39,7 @@ public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
     // FIXME(borja): Could build other structure to check overlaps faster
     public boolean overlaps(BroadcastTransfer el) {
         for (Map.Entry<String, TreeMap<LocalDateTime, Broadcast>> entry : db.entrySet()) {
-            for(Broadcast b : entry.getValue().values()) {
+            for (Broadcast b : entry.getValue().values()) {
                 if (b.getSchedule().overlaps(el.schedule)) {
                     return true;
                 }
@@ -92,7 +92,7 @@ public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
         LocalDateTime currDay = firstOfWeek.atTime(0, 0);
         for (int i = 0; i < 7; i++) {
             LocalDateTime start = currDay.withHour(ThreadLocalRandom.current().nextInt(9, 17 + 1));
-            LocalDateTime end = start.plusHours(ThreadLocalRandom.current().nextInt(1,4+1));
+            LocalDateTime end = start.plusHours(ThreadLocalRandom.current().nextInt(1, 4 + 1));
             l.add(new BroadcastTransfer(p, new BroadcastTime(start, end)));
             currDay = currDay.plusDays(1);
         }
@@ -107,7 +107,7 @@ public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
         }
 
         LocalDateTime startKey = LocalDateTime.of(firstOfWeek, LocalTime.of(0, 0));
-        LocalDateTime endKey = LocalDateTime.of(firstOfWeek.plusDays(7), LocalTime.of(23,59));
+        LocalDateTime endKey = LocalDateTime.of(firstOfWeek.plusDays(7), LocalTime.of(23, 59));
         TreeMap<LocalDateTime, Broadcast> it = this.db.get(p.title);
         for (Broadcast br : it.tailMap(startKey).values()) {
             if (!br.getSchedule().getEnd().isAfter(endKey)) {
@@ -119,14 +119,14 @@ public class BroadcastDAO implements AppDAO<BroadcastTransfer> {
     }
 
     public Stream<BroadcastTransfer> loadForRange(ProgramTransfer p, ThemeSchedule sched) {
-            if (this.db.containsKey(p.title)) {
-                return this.db.get(p.title)
-                           .values()
-                           .stream()
-                           .filter(br -> sched.shouldAffect(br.getSchedule()))
-                           .map(br -> new BroadcastTransfer(p, br));
-            }
+        if (this.db.containsKey(p.title)) {
+            return this.db.get(p.title)
+                    .values()
+                    .stream()
+                    .filter(br -> sched.shouldAffect(br.getSchedule()))
+                    .map(br -> new BroadcastTransfer(p, br));
+        }
 
-            return Stream.empty();
+        return Stream.empty();
     }
 }

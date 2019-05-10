@@ -82,10 +82,13 @@ public class NewSongDialog extends JDialog implements ApplicationWindow, Observe
             return;
         }
 
-        Consumer<String> success = s -> {show(s); dispose();};
+        Consumer<String> success = s -> {
+            show(s);
+            dispose();
+        };
         Consumer<String> err = this::showSync;
         SwingUtilities.invokeLater(() ->
-                                    controller.validSong(this.matchState.get(matchIdx), success, err));
+                controller.validSong(this.matchState.get(matchIdx), success, err));
     }
 
     /**
