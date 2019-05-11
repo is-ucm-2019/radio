@@ -15,6 +15,10 @@ class PlanningController {
         this.parentController = cont;
     }
 
+    void getAllPrograms() {
+        this.parentController.core.allPrograms();
+    }
+
     void addProgramEvent(String name, String description, Color color) {
         ProgramTransfer tr = new ProgramTransfer(name, description, color);
         if (this.parentController.core.programExists(tr)) {

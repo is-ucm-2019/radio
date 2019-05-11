@@ -3,18 +3,20 @@ package radio.core;
 import radio.transfer.BroadcastTransfer;
 import radio.util.BroadcastTime;
 
+import java.util.UUID;
+
 // TODO(borja): Add themes
-public class Broadcast {
-    private String parentTitle;
+public class Broadcast extends PersistentObject<UUID> implements Comparable<Broadcast> {
+    private UUID key;
     private BroadcastTime schedule;
 
-    public Broadcast(String parenTitle, BroadcastTime sched) {
-        this.parentTitle = parenTitle;
+    public Broadcast(BroadcastTime sched) {
+        this.key = UUID.randomUUID();
         this.schedule = sched;
     }
 
     public Broadcast(BroadcastTransfer tr) {
-        this.parentTitle = tr.parent.title;
+        this.key = tr.key;
         this.schedule = tr.schedule;
     }
 
@@ -22,7 +24,13 @@ public class Broadcast {
         return schedule;
     }
 
-    public String getParentTitle() {
-        return parentTitle;
+    @Override
+    UUID getKey() {
+        return key;
+    }
+
+    @Override
+    public int compareTo(Broadcast o) {
+        return schedule.compareTo(o.schedule);
     }
 }

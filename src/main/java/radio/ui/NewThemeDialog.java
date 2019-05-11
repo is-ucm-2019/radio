@@ -85,8 +85,8 @@ public class NewThemeDialog extends JDialog implements IApplicationWindow {
             return;
         }
 
-        SwingUtilities.invokeLater(() -> controller.validateTheme(themeName, descr, startDate, endDate));
-        dispose();
+        SwingUtilities.invokeLater(() ->
+                                    controller.validateTheme(themeName, descr, startDate, endDate, this::dispose, this::showSync));
     }
 
     /**

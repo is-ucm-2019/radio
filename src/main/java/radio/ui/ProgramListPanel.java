@@ -94,6 +94,10 @@ public class ProgramListPanel implements IApplicationWindow, Observer {
         }
     }
 
+    public void willShow() {
+        SwingUtilities.invokeLater(() -> controller.getAllPrograms());
+    }
+
     private void createUIComponents() {
         this.programPopup = new JPopupMenu();
         ProgramListPopup popupAction = new ProgramListPopup();

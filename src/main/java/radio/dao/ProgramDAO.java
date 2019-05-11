@@ -1,5 +1,6 @@
 package radio.dao;
 
+import radio.core.Database;
 import radio.core.Program;
 import radio.transfer.ProgramTransfer;
 
@@ -9,38 +10,34 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class ProgramDAO implements IAppDAO<ProgramTransfer> {
-    private TreeMap<String, Program> db;
+    private Database database;
 
-    public ProgramDAO() {
-        this.db = new TreeMap<>();
+    public ProgramDAO(Database db) {
+        this.database = db;
     }
 
     @Override
     public boolean exists(ProgramTransfer el) {
-        return this.db.containsKey(el.title);
+        return database.programExists(el.title);
     }
 
     @Override
     public void persist(ProgramTransfer el) {
         Program p = new Program(el.title, el.description, el.color);
-        this.db.put(el.title, p);
+        database.persistProgram(p);
     }
 
     @Override
     public void delete(ProgramTransfer el) {
-        this.db.remove(el.title);
+        database.removeProgram(el.title);
     }
 
     @Override
     public List<ProgramTransfer> loadAll() {
-        return this.db.values().stream().map(ProgramTransfer::new).collect(Collectors.toList());
+        return database.getPrograms().stream().map(ProgramTransfer::new).collect(Collectors.toList());
     }
 
     public Optional<ProgramTransfer> findProgram(String programName) {
-        if (this.db.containsKey(programName)) {
-            return Optional.of(new ProgramTransfer(db.get(programName)));
-        } else {
-            return Optional.empty();
-        }
+        return database.getProgram(programName).map(ProgramTransfer::new);
     }
 }

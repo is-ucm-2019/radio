@@ -1,29 +1,26 @@
 package radio.core;
 
+import radio.transfer.ThemeTransfer;
 import radio.util.ThemeSchedule;
 
 import java.awt.*;
 import java.util.Optional;
 
-public class Theme implements Comparable<Theme> {
+public class Theme extends PersistentObject<String> implements Comparable<Theme> {
     private String name;
     private String description;
-    // FIXME(borja): Optional is not serializable
-    private Optional<Color> color;
     private ThemeSchedule schedule;
 
     public Theme(String title, String description, ThemeSchedule sch) {
         this.name = title;
         this.description = description;
         this.schedule = sch;
-        this.color = Optional.empty();
     }
 
-    public Theme(String title, String description, ThemeSchedule sch, Color c) {
-        this.name = title;
-        this.description = description;
-        this.schedule = sch;
-        this.color = Optional.of(c);
+    public Theme(ThemeTransfer tr) {
+        this.name = tr.name;
+        this.description = tr.description;
+        this.schedule = tr.schedule;
     }
 
     public String getName() {
@@ -32,10 +29,6 @@ public class Theme implements Comparable<Theme> {
 
     public String getDescription() {
         return description;
-    }
-
-    public Optional<Color> getColor() {
-        return color;
     }
 
     public ThemeSchedule getSchedule() {
@@ -56,5 +49,10 @@ public class Theme implements Comparable<Theme> {
 
         return this.description.compareTo(o.description);
 
+    }
+
+    @Override
+    String getKey() {
+        return name;
     }
 }

@@ -1,13 +1,14 @@
 package radio.actions;
 
+import radio.transfer.BroadcastTransfer;
 import radio.transfer.ProgramTransfer;
 
 import java.util.List;
 
 public final class UpdateCalendarWeek {
-    public final List<ProgramTransfer> list;
+    public final List<BroadcastTransfer> list;
 
-    public UpdateCalendarWeek(List<ProgramTransfer> l) {
+    public UpdateCalendarWeek(List<BroadcastTransfer> l) {
         this.list = l;
     }
 }
