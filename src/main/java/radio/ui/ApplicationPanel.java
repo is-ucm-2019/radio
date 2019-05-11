@@ -9,5 +9,9 @@ public enum ApplicationPanel {
     ADVERTISERS,
     MUSIC_ARCHIVE,
     PLAYLISTS,
-    THEMES
+    THEMES;
+
+    public String toString() {
+        return name().charAt(0) + name().substring(1).toLowerCase().replace('_', ' ');
+    }
 }

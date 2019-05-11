@@ -32,7 +32,7 @@ public class MainWindow {
         if (toShow == ApplicationPanel.LANDING || toShow == ApplicationPanel.LOGIN) {
             switchCards(toShow, this.frameTitle);
         } else {
-            switchCards(toShow, toShow.name());
+            switchCards(toShow, toShow.toString());
         }
 
     }
