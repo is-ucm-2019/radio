@@ -20,4 +20,8 @@ public class BankingDAO {
     public void persistInfo(BankingInfoTransfer tr) {
         database.setBankingInfo(new BankingInfo(tr));
     }
+
+    public void deleteInfo() {
+        database.setBankingInfo(null);
+    }
 }

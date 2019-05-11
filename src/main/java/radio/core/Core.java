@@ -62,6 +62,10 @@ public class Core extends Observable {
         });
     }
 
+    public boolean hasBankingInfo() {
+        return bankingDAO.getInfo().isPresent();
+    }
+
     public void getBankingInfo() {
         bankingDAO.getInfo().ifPresent(tr -> {
             this.setChanged();
@@ -73,6 +77,10 @@ public class Core extends Observable {
         bankingDAO.persistInfo(tr);
         this.setChanged();
         this.notifyObservers(new BankingInfoUpdated());
+    }
+
+    public void removeBankingInfo() {
+        bankingDAO.deleteInfo();
     }
 
     // TODO(borja): Perform user validation
@@ -173,7 +181,6 @@ public class Core extends Observable {
     public void searchSongDetails(String title, String author, String album, int year) {
         List<SongTransfer> matches = SongService.findMatches(title, author, album, year);
         if (matches.isEmpty()) {
-            System.out.println("No songs found");
             this.setChanged();
             this.notifyObservers(new EmptySongMatchError());
         } else {

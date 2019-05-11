@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SettingsDialog extends JDialog implements IApplicationWindow {
+
     private JPanel contentPane;
     private JButton buttonCancel;
     private JButton contactButton;

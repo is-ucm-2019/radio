@@ -1,5 +1,7 @@
 package radio.dao;
 
+import radio.core.CopyrightLicense;
+import radio.core.PublicDomainLicense;
 import radio.core.SongLicense;
 import radio.transfer.SongTransfer;
 import radio.util.SongDuration;
@@ -44,7 +46,8 @@ public class SongService {
 
             String matchTitle = songF.get(rand.nextInt(songF.size())).apply(title);
             String matchAlbum = albumF.get(rand.nextInt(albumF.size())).apply(album);
-            matches.add(new SongTransfer(matchTitle, author, matchAlbum, year, runningTime, SongLicense.PUBLIC_DOMAIN));
+            SongLicense license = rand.nextBoolean() ? new CopyrightLicense() : new PublicDomainLicense();
+            matches.add(new SongTransfer(matchTitle, author, matchAlbum, year, runningTime, license));
         }
 
         return matches;

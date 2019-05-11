@@ -3,9 +3,6 @@ package radio.core;
 import radio.transfer.ThemeTransfer;
 import radio.util.ThemeSchedule;
 
-import java.awt.*;
-import java.util.Optional;
-
 public class Theme extends PersistentObject<String> implements Comparable<Theme> {
     private String name;
     private String description;

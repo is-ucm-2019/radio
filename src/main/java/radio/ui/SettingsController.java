@@ -28,4 +28,8 @@ public class SettingsController {
         BankingInfoTransfer tr = new BankingInfoTransfer(name, cardNumber, cvv, expiry);
         this.controller.core.setBankingInfo(tr);
     }
+
+    public void removeBankingInfo() {
+        this.controller.core.removeBankingInfo();
+    }
 }

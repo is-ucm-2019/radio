@@ -5,9 +5,7 @@ import radio.core.Theme;
 import radio.transfer.ThemeTransfer;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class ThemeDAO implements IAppDAO<ThemeTransfer> {

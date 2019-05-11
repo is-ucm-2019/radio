@@ -5,7 +5,6 @@ import radio.util.ThemeSchedule;
 
 import java.awt.Color;
 import java.time.LocalDate;
-import java.util.Optional;
 
 public class ThemeTransfer {
     public final String name;

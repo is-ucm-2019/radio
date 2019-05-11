@@ -30,6 +30,7 @@ public class BankingDataDialog extends JDialog implements IApplicationWindow, Ob
     private JTextField cvvField;
     private JComboBox yearDropdown;
     private JComboBox monthDropdown;
+    private JButton eraseButton;
 
     private SettingsController cont;
     private ArrayList<Integer> yearRange = new ArrayList<>();
@@ -43,6 +44,7 @@ public class BankingDataDialog extends JDialog implements IApplicationWindow, Ob
         getRootPane().setDefaultButton(buttonOK);
 
         buttonOK.addActionListener(e -> onOK());
+        eraseButton.addActionListener(_e -> onErase());
         buttonCancel.addActionListener(e -> dispose());
     }
 
@@ -75,7 +77,16 @@ public class BankingDataDialog extends JDialog implements IApplicationWindow, Ob
         }
 
         SwingUtilities.invokeLater(() ->
-                                    cont.setBankingInfo(name, cardNumber, cvvN, expiry));
+                cont.setBankingInfo(name, cardNumber, cvvN, expiry));
+    }
+
+    private void onErase() {
+        nameField.setText("");
+        cardNumberField.setText("");
+        cvvField.setText("");
+        yearDropdown.setSelectedIndex(0);
+        monthDropdown.setSelectedIndex(0);
+        SwingUtilities.invokeLater(() -> cont.removeBankingInfo());
     }
 
     private void createUIComponents() {
@@ -103,10 +114,10 @@ public class BankingDataDialog extends JDialog implements IApplicationWindow, Ob
     private void $$$setupUI$$$() {
         createUIComponents();
         contentPane = new JPanel();
-        contentPane.setLayout(new GridLayoutManager(2, 1, new Insets(10, 10, 10, 10), -1, -1));
+        contentPane.setLayout(new GridLayoutManager(3, 1, new Insets(10, 10, 10, 10), -1, -1));
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        contentPane.add(panel1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, 1, null, null, null, 0, false));
+        contentPane.add(panel1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, 1, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         panel1.add(spacer1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final JPanel panel2 = new JPanel();
@@ -168,6 +179,14 @@ public class BankingDataDialog extends JDialog implements IApplicationWindow, Ob
         label6.setText("Mes");
         panel10.add(label6, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         panel10.add(monthDropdown, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        final JPanel panel11 = new JPanel();
+        panel11.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        contentPane.add(panel11, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        eraseButton = new JButton();
+        eraseButton.setText("Erase");
+        panel11.add(eraseButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer2 = new Spacer();
+        panel11.add(spacer2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
     }
 
     /**
@@ -207,7 +226,7 @@ public class BankingDataDialog extends JDialog implements IApplicationWindow, Ob
         int yearIdx = yearRange.indexOf(date.getYear());
 
         this.monthDropdown.setSelectedIndex(monthIdx);
-        this.yearDropdown.setSelectedIndex((yearIdx == -1)? 0 : yearIdx);
+        this.yearDropdown.setSelectedIndex((yearIdx == -1) ? 0 : yearIdx);
     }
 
     private String safeGet(String s) {

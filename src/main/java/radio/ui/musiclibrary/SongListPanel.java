@@ -85,7 +85,7 @@ public class SongListPanel implements IApplicationWindow, Observer {
     }
 
     @Override
-    public void willShow() { System.out.println("Song list panel is showing!");
+    public void willShow() {
         // Populate list when coming into view
         this.controller.getAllSongs();
     }
