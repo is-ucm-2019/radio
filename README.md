@@ -7,20 +7,20 @@ $ mvn compile
 $ mvn package
 ```
 
-Para ejecutar:
+o bien usando make:
 
-```bash
-$ java -jar target/code-1.0-SNAPSHOT.jar
 ```
-
-O bien, usando make, podemos compilar el proyecto con
-
-```bash
 $ make
 ```
 
-y ejecutarlo con:
+Para ejecutar:
 
-```bash
+```
 $ make run
+```
+
+Para generar datos aleatorios:
+
+```
+$ make gen
 ```
