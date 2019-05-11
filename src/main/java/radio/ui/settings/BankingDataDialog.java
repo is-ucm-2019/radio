@@ -3,16 +3,24 @@ package radio.ui.settings;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import radio.actions.BankingInfoUpdated;
+import radio.actions.ShowBankingInfo;
+import radio.transfer.BankingInfoTransfer;
 import radio.ui.IApplicationWindow;
+import radio.ui.SettingsController;
 import radio.util.TimeUtil;
 
 import javax.swing.*;
 import java.awt.*;
 import java.text.DateFormatSymbols;
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Observable;
+import java.util.Observer;
 
-public class BankingDataDialog extends JDialog implements IApplicationWindow {
+public class BankingDataDialog extends JDialog implements IApplicationWindow, Observer {
 
     private JPanel contentPane;
     private JButton buttonOK;
@@ -23,7 +31,12 @@ public class BankingDataDialog extends JDialog implements IApplicationWindow {
     private JComboBox yearDropdown;
     private JComboBox monthDropdown;
 
-    BankingDataDialog() {
+    private SettingsController cont;
+    private ArrayList<Integer> yearRange = new ArrayList<>();
+
+    BankingDataDialog(SettingsController cont) {
+        this.cont = cont;
+
         $$$setupUI$$$();
         setContentPane(contentPane);
         setModal(true);
@@ -34,8 +47,35 @@ public class BankingDataDialog extends JDialog implements IApplicationWindow {
     }
 
     private void onOK() {
-        // add your code here
-        dispose();
+        String name = nameField.getText();
+        String cardNumber = cardNumberField.getText();
+        String cvv = cvvField.getText();
+
+        if (name.isEmpty() || cardNumber.isEmpty() || cvv.isEmpty()) {
+            showSync("Please fill all the fields");
+            return;
+        }
+
+        int cvvN;
+        try {
+            cvvN = Integer.parseInt(cvv);
+        } catch (NumberFormatException _e) {
+            showSync("Please fill a valid CVV");
+            return;
+        }
+
+        Integer year = yearRange.get(yearDropdown.getSelectedIndex());
+        int monthIdx = monthDropdown.getSelectedIndex();
+        LocalDate expiry;
+        try {
+            expiry = LocalDate.of(year, monthIdx + 1, 1);
+        } catch (DateTimeException _e) {
+            showSync("Please fill a valid date!");
+            return;
+        }
+
+        SwingUtilities.invokeLater(() ->
+                                    cont.setBankingInfo(name, cardNumber, cvvN, expiry));
     }
 
     private void createUIComponents() {
@@ -44,13 +84,12 @@ public class BankingDataDialog extends JDialog implements IApplicationWindow {
         months = Arrays.copyOfRange(months, 0, 12);
 
         int currentYear = today.getYear();
-        Integer[] years = new Integer[5];
         for (int i = 0; i < 5; i++) {
-            years[i] = currentYear;
+            yearRange.add(currentYear);
             ++currentYear;
         }
 
-        yearDropdown = new JComboBox(years);
+        yearDropdown = new JComboBox(yearRange.toArray());
         monthDropdown = new JComboBox(months);
     }
 
@@ -141,5 +180,37 @@ public class BankingDataDialog extends JDialog implements IApplicationWindow {
     @Override
     public JPanel getPanelHandler() {
         return (JPanel) $$$getRootComponent$$$();
+    }
+
+    @Override
+    public void willShow() {
+        cont.getBankingInfo();
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg instanceof ShowBankingInfo) {
+            populateData(((ShowBankingInfo) arg).tr);
+        } else if (arg instanceof BankingInfoUpdated) {
+            showSync("Banking info updated succesfully");
+            dispose();
+        }
+    }
+
+    private void populateData(BankingInfoTransfer tr) {
+        this.nameField.setText(safeGet(tr.holder));
+        this.cardNumberField.setText(safeGet(tr.number));
+        this.cvvField.setText(String.valueOf(tr.cvv));
+
+        LocalDate date = tr.expireDate;
+        int monthIdx = date.getMonthValue() - 1;
+        int yearIdx = yearRange.indexOf(date.getYear());
+
+        this.monthDropdown.setSelectedIndex(monthIdx);
+        this.yearDropdown.setSelectedIndex((yearIdx == -1)? 0 : yearIdx);
+    }
+
+    private String safeGet(String s) {
+        return (s == null) ? "" : s;
     }
 }

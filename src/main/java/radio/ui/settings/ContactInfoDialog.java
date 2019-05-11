@@ -3,12 +3,17 @@ package radio.ui.settings;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import radio.actions.ShowContactInfo;
+import radio.transfer.UserTransfer;
 import radio.ui.IApplicationWindow;
+import radio.ui.SettingsController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Observable;
+import java.util.Observer;
 
-public class ContactInfoDialog extends JDialog implements IApplicationWindow {
+public class ContactInfoDialog extends JDialog implements IApplicationWindow, Observer {
 
     private JPanel contentPane;
     private JButton buttonOK;
@@ -29,8 +34,11 @@ public class ContactInfoDialog extends JDialog implements IApplicationWindow {
     private JLabel ticketOptionLabel;
     private JLabel phoneNumberLabel;
 
-    // TODO(borja): Autopopulate data from controller
-    ContactInfoDialog() {
+    private SettingsController cont;
+
+    ContactInfoDialog(SettingsController cont) {
+        this.cont = cont;
+
         $$$setupUI$$$();
         setContentPane(contentPane);
         setModal(true);
@@ -164,5 +172,28 @@ public class ContactInfoDialog extends JDialog implements IApplicationWindow {
     @Override
     public JPanel getPanelHandler() {
         return (JPanel) $$$getRootComponent$$$();
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg instanceof ShowContactInfo) {
+            populateData(((ShowContactInfo) arg).tr);
+        }
+    }
+
+    private void populateData(UserTransfer tr) {
+        this.nameField.setText(safeGet(tr.name));
+        this.userField.setText(safeGet(tr.username));
+        this.emailField.setText(safeGet(tr.email));
+        this.phoneNumberField.setText(safeGet(tr.phoneNumber));
+    }
+
+    private String safeGet(String s) {
+        return (s == null) ? "" : s;
+    }
+
+    @Override
+    public void willShow() {
+        cont.getContactInfo();
     }
 }

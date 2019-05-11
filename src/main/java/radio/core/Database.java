@@ -19,6 +19,8 @@ import java.util.*;
 //
 // Attributes starting `transient` will not be serialized to disk.
 public final class Database implements Serializable {
+    private BankingInfo bankingInfo;
+
     // Fist, all the users in the system
     // Users have no further data
     private List<User> users;
@@ -81,6 +83,7 @@ public final class Database implements Serializable {
     }
 
     Database() {
+        bankingInfo = null;
         users = new ArrayList<>();
         programs = new ArrayList<>();
         themes = new ArrayList<>();
@@ -122,6 +125,14 @@ public final class Database implements Serializable {
         for (Song s : songs) {
             _songIndex.put(s.getKey(), s);
         }
+    }
+
+    public BankingInfo getBankingInfo() {
+        return bankingInfo;
+    }
+
+    public void setBankingInfo(BankingInfo info) {
+        bankingInfo = info;
     }
 
     public boolean programExists(String key) {

@@ -2,10 +2,7 @@ package radio.core;
 
 import radio.actions.*;
 import radio.dao.*;
-import radio.transfer.BroadcastTransfer;
-import radio.transfer.ProgramTransfer;
-import radio.transfer.SongTransfer;
-import radio.transfer.ThemeTransfer;
+import radio.transfer.*;
 import radio.util.PersistenceException;
 
 import java.time.LocalDate;
@@ -16,6 +13,7 @@ public class Core extends Observable {
 
     private Optional<User> currentUser = Optional.empty();
     private Database db;
+    private BankingDAO bankingDAO;
     private ProgramDAO programDAO;
     private BroadcastDAO broadcastDAO;
     private ThemeDAO themeDAO;
@@ -23,6 +21,7 @@ public class Core extends Observable {
 
     public Core() {
         db = createDatabase();
+        bankingDAO = new BankingDAO(db);
         programDAO = new ProgramDAO(db);
         broadcastDAO = new BroadcastDAO(db);
         themeDAO = new ThemeDAO(db);
@@ -46,6 +45,34 @@ public class Core extends Observable {
 
     public void dispatchObserver(Observer obs) {
         this.addObserver(obs);
+    }
+
+    public void removeObserver(Observer o) {
+        this.deleteObserver(o);
+    }
+
+    public boolean userHasBankingPermissions() {
+        return currentUser.map(User::canChangeBankingInfo).orElse(false);
+    }
+
+    public void getContactInfo() {
+        currentUser.map(UserTransfer::new).ifPresent(tr -> {
+            this.setChanged();
+            this.notifyObservers(new ShowContactInfo(tr));
+        });
+    }
+
+    public void getBankingInfo() {
+        bankingDAO.getInfo().ifPresent(tr -> {
+            this.setChanged();
+            this.notifyObservers(new ShowBankingInfo(tr));
+        });
+    }
+
+    public void setBankingInfo(BankingInfoTransfer tr) {
+        bankingDAO.persistInfo(tr);
+        this.setChanged();
+        this.notifyObservers(new BankingInfoUpdated());
     }
 
     // TODO(borja): Perform user validation

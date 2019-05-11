@@ -42,7 +42,8 @@ public class MainController {
     }
 
     void showSettings() {
-        SettingsDialog dialog = new SettingsDialog();
+        SettingsDialog dialog = new SettingsDialog(this);
+        dialog.willShow();
         dialog.pack();
         dialog.setVisible(true);
     }
@@ -74,6 +75,10 @@ public class MainController {
 
     public void addObserver(Observer o) {
         this.core.dispatchObserver(o);
+    }
+
+    public void removeObserver(Observer o) {
+        this.core.removeObserver(o);
     }
 
     void showToUser(String message) {

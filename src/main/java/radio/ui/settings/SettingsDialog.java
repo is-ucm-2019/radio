@@ -4,6 +4,8 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import radio.ui.IApplicationWindow;
+import radio.ui.MainController;
+import radio.ui.SettingsController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,26 +16,39 @@ public class SettingsDialog extends JDialog implements IApplicationWindow {
     private JButton contactButton;
     private JButton bankingButton;
 
-    public SettingsDialog() {
+    private SettingsController controller;
+    private ContactInfoDialog contactInfoDialog;
+    private BankingDataDialog bankingDataDialog;
+
+    public SettingsDialog(MainController cont) {
+        controller = new SettingsController(cont);
+        contactInfoDialog = new ContactInfoDialog(controller);
+        bankingDataDialog = new BankingDataDialog(controller);
+        cont.addObserver(contactInfoDialog);
+        cont.addObserver(bankingDataDialog);
+
         $$$setupUI$$$();
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonCancel);
 
         contactButton.addActionListener(e -> {
-            ContactInfoDialog dialog = new ContactInfoDialog();
-            dialog.pack();
-            dialog.setVisible(true);
+            contactInfoDialog.pack();
+            contactInfoDialog.willShow();
+            contactInfoDialog.setVisible(true);
         });
 
-        // TODO(borja): Verify user has permissions for this
         bankingButton.addActionListener(e -> {
-            BankingDataDialog dialog = new BankingDataDialog();
-            dialog.pack();
-            dialog.setVisible(true);
+            bankingDataDialog.pack();
+            bankingDataDialog.willShow();
+            bankingDataDialog.setVisible(true);
         });
 
-        buttonCancel.addActionListener(_e -> dispose());
+        buttonCancel.addActionListener(_e -> {
+            cont.removeObserver(contactInfoDialog);
+            cont.removeObserver(bankingDataDialog);
+            dispose();
+        });
     }
 
     /**
@@ -84,5 +99,9 @@ public class SettingsDialog extends JDialog implements IApplicationWindow {
     @Override
     public JPanel getPanelHandler() {
         return (JPanel) $$$getRootComponent$$$();
+    }
+
+    public void willShow() {
+        bankingButton.setVisible(controller.checkBankingPermissions());
     }
 }
