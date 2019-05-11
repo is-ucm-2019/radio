@@ -10,7 +10,6 @@ public final class ProgramTransfer {
     public final String title;
     public final String description;
     public final Color color;
-    public List<BroadcastTransfer> broadcasts = new ArrayList<>();
 
     public ProgramTransfer(String title, String description, Color color) {
         this.title = title;

@@ -18,6 +18,7 @@ public class Core extends Observable {
     private BroadcastDAO broadcastDAO;
     private ThemeDAO themeDAO;
     private SongDAO songDAO;
+    private PlaylistDAO playlistDAO;
 
     public Core(String databasePath) {
         dbPath = databasePath;
@@ -27,6 +28,7 @@ public class Core extends Observable {
         broadcastDAO = new BroadcastDAO(db);
         themeDAO = new ThemeDAO(db);
         songDAO = new SongDAO(db);
+        playlistDAO = new PlaylistDAO(db);
     }
 
     public void quit() {
@@ -188,5 +190,14 @@ public class Core extends Observable {
             this.setChanged();
             this.notifyObservers(new ShowSongMatch(matches));
         }
+    }
+
+    public void allPlaylists() {
+        this.setChanged();
+        this.notifyObservers(new ShowPlaylists(playlistDAO.loadAll()));
+    }
+
+    public void removePlaylist(PlaylistTransfer tr) {
+        playlistDAO.delete(tr);
     }
 }

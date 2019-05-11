@@ -3,46 +3,56 @@ package radio.ui;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import radio.actions.ShowPlaylists;
+import radio.transfer.PlaylistTransfer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class PlaylistWindow implements IApplicationWindow {
+public class PlaylistWindow implements IApplicationWindow, Observer {
     private JPanel panel1;
     private JList<String> playlistList;
-    // TODO(borja): show songs
     private JButton showSongsButton;
-    // TODO(borja): show edit window
     private JButton editButton;
     private JButton deleteButton;
-    // TODO(borja): show new playlist window
     private JButton newButton;
     private JTextField searchField;
 
     private MenuPanel menuView;
-    private MainController controller;
+    private MainController mainController;
+    private PlaylistController controller;
 
     private DefaultListModel<String> listModel;
+    private List<PlaylistTransfer> playlistData;
 
     PlaylistWindow(MainController controller) {
-        this.controller = controller;
+        this.mainController = controller;
+        this.controller = new PlaylistController(controller);
+        this.controller.subscribeToCore(this);
+
         $$$setupUI$$$();
         deleteButton.addActionListener(e -> confirmPlaylistDeletion());
     }
 
     private void confirmPlaylistDeletion() {
         // No item selected
-        if (this.playlistList.getSelectedIndex() == -1) {
+        int idx = this.playlistList.getSelectedIndex();
+        if (idx == -1) {
             showSync("Select a playlist on the left to delete it");
             return;
         }
 
         int result = JOptionPane.showConfirmDialog(null, "Are you sure?", "Delete Playlist", JOptionPane.YES_NO_OPTION);
-        if (result == JOptionPane.YES_OPTION) {
-            // TODO(borja): Delete playlist here
-            // Should confirm that it's not being used in a broadcast first
+        if (result == JOptionPane.NO_OPTION) {
             return;
         }
+
+        PlaylistTransfer tr = this.playlistData.remove(idx);
+        this.listModel.remove(idx);
+        SwingUtilities.invokeLater(() -> this.controller.deletePlaylist(tr));
     }
 
     /**
@@ -104,7 +114,7 @@ public class PlaylistWindow implements IApplicationWindow {
     }
 
     private void createUIComponents() {
-        this.menuView = new MenuPanel(this.controller);
+        this.menuView = new MenuPanel(mainController);
         this.listModel = new DefaultListModel<>();
         playlistList = new JList<>(listModel);
         playlistList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -117,6 +127,21 @@ public class PlaylistWindow implements IApplicationWindow {
 
     @Override
     public void willShow() {
-        // TODO(borja): Populate playlist list
+        this.controller.getAllPlaylists();
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg instanceof ShowPlaylists) {
+            populateData(((ShowPlaylists) arg).list);
+        }
+    }
+
+    private void populateData(List<PlaylistTransfer> list) {
+        this.listModel.clear();
+        this.playlistData = list;
+        for (PlaylistTransfer tr : list) {
+            this.listModel.addElement(tr.toString());
+        }
     }
 }

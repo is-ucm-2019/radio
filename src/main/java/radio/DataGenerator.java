@@ -19,7 +19,7 @@ class DataGenerator {
         fillUsers(db);
         fillPrograms(db);
         fillThemes(db);
-        fillSongs(db);
+        fillPlaylistsAndSongs(db);
     }
 
     private static void fillBankingInfo(Database db) {
@@ -69,14 +69,29 @@ class DataGenerator {
         }
     }
 
-    private static void fillSongs(Database db) {
+    private static void fillPlaylistsAndSongs(Database db) {
+        Playlist[] playlists = new Playlist[10];
+        for (int i = 0; i < 10; i++) {
+            String title = String.format("Playlist %s", i);
+            String description = String.format("Description for %s", title);
+            playlists[i] = new Playlist(title, description);
+        }
+
         for (int i = 0; i < 20; i++) {
             String title = String.format("Song %s", i);
             String author = String.format("Author %s", i);
             String album = String.format("Album %s", i);
             int year = 1999 + i;
             SongDuration duration = new SongDuration(4, 20);
-            db.persistSong(new Song(title, author, album, year, duration, new PublicDomainLicense()));
+            Song s = new Song(title, author, album, year, duration, new PublicDomainLicense());
+            db.persistSong(s);
+            if (i < 10) {
+                playlists[i].addSong(s);
+            }
+        }
+
+        for (Playlist p : playlists) {
+            db.persistPlaylist(p);
         }
     }
 }

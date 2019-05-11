@@ -40,6 +40,9 @@ public final class Database implements Serializable {
     // Additional sorted map for broadcasts
     transient private TreeMap<LocalDateTime, UUID> _broadcastCalendar;
 
+    // Reversed of Broadcast -> Theme
+    private Map<UUID, Set<String>> themeForBroadcast;
+
     // A list of all themes
     private List<Theme> themes;
     transient private Map<String, Theme> _themeIndex;
@@ -49,8 +52,11 @@ public final class Database implements Serializable {
     // Reverse index of songs
     transient private Map<SongKey, Song> _songIndex;
 
-    // Reversed of Broadcast -> Theme
-    private Map<UUID, Set<String>> themeForBroadcast;
+    // A list of all playlists
+    // Playlists have nested songs
+    private List<Playlist> playlists;
+    transient private Map<String, Playlist> _playlistIndex;
+    transient private Map<SongKey, String> _playlistForSong;
 
     public static void toDisk(Database db, String path) throws PersistenceException {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path))) {
@@ -89,6 +95,7 @@ public final class Database implements Serializable {
         themes = new ArrayList<>();
         themeForBroadcast = new TreeMap<>();
         songs = new ArrayList<>();
+        playlists = new ArrayList<>();
 
         // Update indices
         fillIndices();
@@ -121,9 +128,20 @@ public final class Database implements Serializable {
             _themeIndex.put(t.getKey(), t);
         }
 
+        // Song indices
         _songIndex = new TreeMap<>();
         for (Song s : songs) {
             _songIndex.put(s.getKey(), s);
+        }
+
+        // Playlist indices
+        _playlistIndex = new HashMap<>();
+        _playlistForSong = new HashMap<>();
+        for (Playlist p : playlists) {
+            _playlistIndex.put(p.getKey(), p);
+            for (Song s : p.getSongs()) {
+                _playlistForSong.put(s.getKey(), p.getKey());
+            }
         }
     }
 
@@ -271,5 +289,31 @@ public final class Database implements Serializable {
 
     public List<Song> getSongs() {
         return songs;
+    }
+
+    public boolean playlistExists(String key) {
+        return _playlistIndex.containsKey(key);
+    }
+
+    public void persistPlaylist(Playlist p) {
+        playlists.add(p);
+        _playlistIndex.put(p.getKey(), p);
+        for (Song s : p.getSongs()) {
+            _playlistForSong.put(s.getKey(), p.getKey());
+        }
+    }
+
+    public void removePlaylist(String key) {
+        Playlist p = _playlistIndex.get(key);
+        playlists.remove(p);
+        _playlistIndex.remove(key);
+
+        for (Song s : p.getSongs()) {
+            _playlistForSong.remove(s.getKey());
+        }
+    }
+
+    public List<Playlist> getPlaylists() {
+        return playlists;
     }
 }
