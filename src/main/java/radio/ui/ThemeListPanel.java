@@ -99,7 +99,7 @@ public class ThemeListPanel implements IApplicationWindow, Observer {
     }
 
     private void showThemeBroadcasts(ChooseBroadcasts msg) {
-        ChooseThemeBroadcasts dialog = new ChooseThemeBroadcasts(controller, msg.tr, msg.includedBroadcasts);
+        ChooseThemeBroadcastsDialog dialog = new ChooseThemeBroadcastsDialog(controller, msg.tr, msg.includedBroadcasts);
         dialog.pack();
         dialog.setVisible(true);
     }

@@ -42,6 +42,11 @@ public final class Database implements Serializable {
     private List<Theme> themes;
     transient private Map<String, Theme> _themeIndex;
 
+    // A list of all songs
+    private List<Song> songs;
+    // Reverse index of songs
+    transient private Map<SongKey, Song> _songIndex;
+
     // Reversed of Broadcast -> Theme
     private Map<UUID, Set<String>> themeForBroadcast;
 
@@ -80,6 +85,7 @@ public final class Database implements Serializable {
         programs = new ArrayList<>();
         themes = new ArrayList<>();
         themeForBroadcast = new TreeMap<>();
+        songs = new ArrayList<>();
 
         // Update indices
         fillIndices();
@@ -110,6 +116,11 @@ public final class Database implements Serializable {
         _themeIndex = new TreeMap<>();
         for (Theme t : themes) {
             _themeIndex.put(t.getKey(), t);
+        }
+
+        _songIndex = new TreeMap<>();
+        for (Song s : songs) {
+            _songIndex.put(s.getKey(), s);
         }
     }
 
@@ -225,5 +236,24 @@ public final class Database implements Serializable {
             left.addAll(right);
             return left;
         });
+    }
+
+    public boolean songExists(SongKey key) {
+        return _songIndex.containsKey(key);
+    }
+
+    public void persistSong(Song s) {
+        songs.add(s);
+        _songIndex.put(s.getKey(), s);
+    }
+
+    public void removeSong(SongKey key) {
+        Song s = _songIndex.get(key);
+        _songIndex.remove(key);
+        songs.remove(s);
+    }
+
+    public List<Song> getSongs() {
+        return songs;
     }
 }

@@ -138,8 +138,9 @@ public class Core extends Observable {
     }
 
     public void loadSongInfo() {
+        List<SongTransfer> songs = this.songDAO.loadAll();
         this.setChanged();
-        this.notifyObservers(new ShowSongList(this.songDAO.loadAll()));
+        this.notifyObservers(new ShowSongList(songs));
     }
 
     public void searchSongDetails(String title, String author, String album, int year) {

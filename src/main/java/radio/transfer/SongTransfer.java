@@ -1,5 +1,6 @@
 package radio.transfer;
 
+import radio.core.Song;
 import radio.core.SongLicense;
 import radio.util.SongDuration;
 
@@ -18,6 +19,15 @@ public class SongTransfer {
         this.year = year;
         this.duration = duration;
         this.license = license;
+    }
+
+    public SongTransfer(Song s) {
+        this.title = s.getTitle();
+        this.album = s.getAlbum();
+        this.author = s.getAuthor();
+        this.year = s.getYear();
+        this.duration = s.getRunningTime();
+        this.license = s.getLicense();
     }
 
     public String toString() {

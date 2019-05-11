@@ -85,17 +85,13 @@ public class SongListPanel implements IApplicationWindow, Observer {
     }
 
     @Override
-    public void willShow() {
+    public void willShow() { System.out.println("Song list panel is showing!");
         // Populate list when coming into view
         this.controller.getAllSongs();
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        if (!getPanelHandler().isShowing()) {
-            return;
-        }
-
         if (arg instanceof ShowSongList) {
             populateSongList((ShowSongList) arg);
         } else if (arg instanceof UpdateSongList) {

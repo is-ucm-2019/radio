@@ -1,6 +1,8 @@
 package radio.core;
 
-public enum SongLicense {
+import java.io.Serializable;
+
+public enum SongLicense implements Serializable {
     PUBLIC_DOMAIN,
     COPYRIGHTED;
 

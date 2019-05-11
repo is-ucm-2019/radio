@@ -1,6 +1,8 @@
 package radio.util;
 
-public class SongDuration {
+import java.io.Serializable;
+
+public class SongDuration implements Serializable {
     private int minutes;
     private int seconds;
 
