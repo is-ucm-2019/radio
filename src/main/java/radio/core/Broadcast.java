@@ -33,4 +33,8 @@ public class Broadcast extends PersistentObject<UUID> implements Comparable<Broa
     public int compareTo(Broadcast o) {
         return schedule.compareTo(o.schedule);
     }
+
+    public String toString() {
+        return schedule.toString();
+    }
 }

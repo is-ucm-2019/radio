@@ -52,7 +52,7 @@ public final class Database implements Serializable {
     // Reversed of Broadcast -> Theme
     private Map<UUID, Set<String>> themeForBroadcast;
 
-    static void toDisk(Database db, String path) throws PersistenceException {
+    public static void toDisk(Database db, String path) throws PersistenceException {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path))) {
             out.writeObject(db);
         } catch (IOException e) {
@@ -82,7 +82,7 @@ public final class Database implements Serializable {
         fillIndices();
     }
 
-    Database() {
+    public Database() {
         bankingInfo = null;
         users = new ArrayList<>();
         programs = new ArrayList<>();
@@ -133,6 +133,11 @@ public final class Database implements Serializable {
 
     public void setBankingInfo(BankingInfo info) {
         bankingInfo = info;
+    }
+
+    public void persistUser(User u) {
+        this.users.add(u);
+        _userIndex.put(u.getKey(), u);
     }
 
     public boolean programExists(String key) {

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class Core extends Observable {
-    private static final String DB_PATH = "/tmp/db.ser";
+    private String dbPath;
 
     private Optional<User> currentUser = Optional.empty();
     private Database db;
@@ -19,7 +19,8 @@ public class Core extends Observable {
     private ThemeDAO themeDAO;
     private SongDAO songDAO;
 
-    public Core() {
+    public Core(String databasePath) {
+        dbPath = databasePath;
         db = createDatabase();
         bankingDAO = new BankingDAO(db);
         programDAO = new ProgramDAO(db);
@@ -30,15 +31,15 @@ public class Core extends Observable {
 
     public void quit() {
         try {
-            Database.toDisk(this.db, DB_PATH);
+            Database.toDisk(db, dbPath);
         } catch (PersistenceException e) {
-            System.err.println(String.format("Couldn't save to %s", DB_PATH));
+            System.err.println(String.format("Couldn't save to %s", dbPath));
         }
     }
 
     private Database createDatabase() {
-        return Database.fromDisk(DB_PATH).orElseGet(() -> {
-            System.err.println(String.format("Couldn't load from %s, creating new database", DB_PATH));
+        return Database.fromDisk(dbPath).orElseGet(() -> {
+            System.err.println(String.format("Couldn't load from %s, creating new database", dbPath));
             return new Database();
         });
     }

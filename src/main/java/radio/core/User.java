@@ -2,7 +2,7 @@ package radio.core;
 
 public class User extends PersistentObject<String> {
     private String name = null;
-    private UserPermission permission = UserPermission.NONE;
+    private UserPermission permission;
 
     private String email = null;
     private String phone = null;
@@ -11,6 +11,15 @@ public class User extends PersistentObject<String> {
     private String password;
 
     public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public User(String username, String password, String name, String email, String phone, UserPermission perm) {
+        this.name = name;
+        this.permission = perm;
+        this.email = email;
+        this.phone = phone;
         this.username = username;
         this.password = password;
     }

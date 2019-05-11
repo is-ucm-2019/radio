@@ -10,5 +10,8 @@ package radio.core;
  * @author Borja
  */
 public enum UserPermission {
-    NONE, ADMIN, PROGRAM_DIRECTOR, MUSIC_DIRECTOR, PR, ADVERTISING, IT
+    ADMIN, PROGRAM_DIRECTOR, MUSIC_DIRECTOR, PR, ADVERTISING, IT;
+    public String toString() {
+        return name().charAt(0) + name().substring(1).toLowerCase().replace('_', ' ');
+    }
 }

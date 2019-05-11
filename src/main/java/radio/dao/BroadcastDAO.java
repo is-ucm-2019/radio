@@ -65,20 +65,6 @@ public class BroadcastDAO implements IAppDAO<BroadcastTransfer> {
                 .collect(Collectors.toList());
     }
 
-
-    public List<BroadcastTransfer> loadRandomForWeek(ProgramTransfer p, LocalDate firstOfWeek) {
-        ArrayList<BroadcastTransfer> l = new ArrayList<>();
-        LocalDateTime currDay = firstOfWeek.atTime(0, 0);
-        for (int i = 0; i < 7; i++) {
-            LocalDateTime start = currDay.withHour(ThreadLocalRandom.current().nextInt(9, 17 + 1));
-            LocalDateTime end = start.plusHours(ThreadLocalRandom.current().nextInt(1, 4 + 1));
-            l.add(new BroadcastTransfer(p, new BroadcastTime(start, end)));
-            currDay = currDay.plusDays(1);
-        }
-
-        return l;
-    }
-
     public List<BroadcastTransfer> loadForWeek(LocalDate firstOfWeek) {
         return database.forWeek(firstOfWeek)
                        .stream()

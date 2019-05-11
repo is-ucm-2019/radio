@@ -11,6 +11,13 @@ public class BankingInfo implements Serializable {
     private int cvv;
     private LocalDate expireDate;
 
+    public BankingInfo(String holder, String number, int cvv, LocalDate expireDate) {
+        this.holder = holder;
+        this.number = number;
+        this.cvv = cvv;
+        this.expireDate = expireDate;
+    }
+
     public BankingInfo(BankingInfoTransfer tr) {
         this.holder = tr.holder;
         this.number = tr.number;
