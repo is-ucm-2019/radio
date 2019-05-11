@@ -1,30 +1,29 @@
 package radio.core;
 
 import radio.actions.*;
-import radio.core.users.User;
 import radio.dao.*;
 import radio.transfer.BroadcastTransfer;
 import radio.transfer.ProgramTransfer;
 import radio.transfer.SongTransfer;
 import radio.transfer.ThemeTransfer;
-import radio.util.ThemeSchedule;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Core extends Observable {
     private Optional<User> currentUser = Optional.empty();
+    private Database db;
     private ProgramDAO programDAO;
     private BroadcastDAO broadcastDAO;
     private ThemeDAO themeDAO;
     private SongDAO songDAO;
 
     public Core() {
-        programDAO = new ProgramDAO();
-        broadcastDAO = new BroadcastDAO();
-        themeDAO = new ThemeDAO();
-        songDAO = new SongDAO();
+        db = new Database();
+        programDAO = new ProgramDAO(db);
+        broadcastDAO = new BroadcastDAO(db);
+        themeDAO = new ThemeDAO(db);
+        songDAO = new SongDAO(db);
     }
 
     public void dispatchObserver(Observer obs) {
@@ -42,13 +41,8 @@ public class Core extends Observable {
 
     // Loads all programs and broadcasts for the week starting on `start`
     public void loadPlanningInfo(LocalDate start) {
-        List<ProgramTransfer> programs = programDAO.loadAll();
-        for (ProgramTransfer p : programs) {
-            p.broadcasts = broadcastDAO.loadForWeek(p, start);
-        }
-
         this.setChanged();
-        this.notifyObservers(new UpdateCalendarWeek(programs));
+        this.notifyObservers(new UpdateCalendarWeek(broadcastDAO.loadForWeek(start)));
     }
 
     public boolean programExists(ProgramTransfer tr) {
@@ -83,35 +77,28 @@ public class Core extends Observable {
         this.notifyObservers(new ShowThemeList(this.themeDAO.loadAll()));
     }
 
+    public boolean themeExists(ThemeTransfer tr) {
+        return this.themeDAO.exists(tr);
+    }
+
     public void validateTheme(ThemeTransfer tr) {
-        ThemeSchedule sched = tr.schedule;
-        List<BroadcastTransfer> l = this.programDAO
-                .loadAll()
-                .stream()
-                .flatMap(program ->
-                        this.broadcastDAO.loadForRange(program, sched))
-                .collect(Collectors.toList());
+        List<BroadcastTransfer> l = this.broadcastDAO.loadForRange(tr.schedule);
 
         if (l.isEmpty()) {
-            System.out.println("No theme overlap!");
+            themeDAO.persist(tr);
             this.setChanged();
             this.notifyObservers(new UpdateThemeList(tr));
         } else {
-            System.out.println("Theme overlaps");
             this.setChanged();
             this.notifyObservers(new ChooseBroadcasts(tr, l));
         }
     }
 
     public void confirmTheme(ThemeTransfer tr, List<BroadcastTransfer> chosen) {
+        themeDAO.persist(tr);
         for (BroadcastTransfer b : chosen) {
-            // TODO(borja): Implement
-            System.out.println("User chose " + b);
-            // b.themes.add(tr);
-            // this.broadcastDAO.update(b);
+            broadcastDAO.addTheme(b, tr);
         }
-
-        this.themeDAO.persist(tr);
 
         this.setChanged();
         this.notifyObservers(new UpdateThemeList(tr));

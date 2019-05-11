@@ -1,4 +1,4 @@
-package radio.core.users;
+package radio.core;
 
 /**
  * Nivel de permisos que tiene un usuario de la aplicación.

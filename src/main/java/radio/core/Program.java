@@ -4,7 +4,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Program {
+public class Program extends PersistentObject<String> {
+
     private String title;
     private String description;
     private Color color;
@@ -31,5 +32,18 @@ public class Program {
 
     public List<Broadcast> getBroadcasts() {
         return broadcasts;
+    }
+
+    public void addBroadcast(Broadcast b) {
+        this.broadcasts.add(b);
+    }
+
+    public void removeBroadcast(Broadcast b) {
+        this.broadcasts.remove(b);
+    }
+
+    @Override
+    String getKey() {
+        return title;
     }
 }

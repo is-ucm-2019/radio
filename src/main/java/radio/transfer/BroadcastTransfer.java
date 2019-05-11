@@ -4,9 +4,11 @@ import radio.core.Broadcast;
 import radio.util.BroadcastTime;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 // TODO(borja): Add themes
 public final class BroadcastTransfer {
+    public final UUID key = UUID.randomUUID();
     public final ProgramTransfer parent;
     public final BroadcastTime schedule;
 

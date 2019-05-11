@@ -1,5 +1,6 @@
 package radio.dao;
 
+import radio.core.Database;
 import radio.core.Theme;
 import radio.transfer.ThemeTransfer;
 
@@ -10,36 +11,32 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class ThemeDAO implements IAppDAO<ThemeTransfer> {
-    private HashSet<String> ids = new HashSet<>();
-    private TreeSet<Theme> db = new TreeSet<>();
+    private Database database;
+
+    public ThemeDAO(Database db) {
+        this.database = db;
+    }
 
     @Override
     public boolean exists(ThemeTransfer el) {
-        return this.ids.contains(el.name);
-    }
-
-    private Theme forTransfer(ThemeTransfer el) {
-        return el.color.map(color -> new Theme(el.name, el.description, el.schedule, color))
-                .orElseGet(() -> new Theme(el.name, el.description, el.schedule));
+        return database.themeExists(el.name);
     }
 
     @Override
     public void persist(ThemeTransfer el) {
-        Theme t = forTransfer(el);
-        ids.add(el.name);
-        db.add(t);
+        database.persistTheme(new Theme(el));
     }
 
     @Override
     public void delete(ThemeTransfer el) {
-        if (exists(el)) {
-            db.remove(forTransfer(el));
-        }
+        database.removeTheme(el.name);
     }
 
     @Override
     public List<ThemeTransfer> loadAll() {
-        return db.stream().map(ThemeTransfer::new).collect(Collectors.toList());
+        return database.getThemes()
+                       .stream()
+                        .map(ThemeTransfer::new).collect(Collectors.toList());
     }
 
     // TODO(borja): Implement

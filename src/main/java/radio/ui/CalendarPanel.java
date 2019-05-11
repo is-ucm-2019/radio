@@ -186,15 +186,13 @@ public class CalendarPanel implements IApplicationWindow, Observer {
         }
     }
 
-    private void showProgramsForWeek(List<ProgramTransfer> programs) {
+    private void showProgramsForWeek(List<BroadcastTransfer> broadcasts) {
         clearCalendar();
         setupCalendar();
 
         DefaultTableModel tableModel = (DefaultTableModel) calendarTable.getModel();
-        for (ProgramTransfer p : programs) {
-            for (BroadcastTransfer tr : p.broadcasts) {
-                putBroadcastOnCalendarInternal(tableModel, tr);
-            }
+        for (BroadcastTransfer tr : broadcasts) {
+            putBroadcastOnCalendarInternal(tableModel, tr);
         }
     }
 
