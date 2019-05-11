@@ -12,7 +12,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChooseThemeBroadcasts extends JDialog {
+public class ChooseThemeBroadcastsDialog extends JDialog {
 
     private JPanel contentPane;
     private JButton buttonOK;
@@ -26,9 +26,9 @@ public class ChooseThemeBroadcasts extends JDialog {
     private ThemeTransfer stateTheme;
     private List<BroadcastTransfer> stateBroadcasts;
 
-    public ChooseThemeBroadcasts(ThemesController controller,
-                                 ThemeTransfer parent,
-                                 List<BroadcastTransfer> toShow) {
+    public ChooseThemeBroadcastsDialog(ThemesController controller,
+                                       ThemeTransfer parent,
+                                       List<BroadcastTransfer> toShow) {
 
         this.stateTheme = parent;
         this.stateBroadcasts = toShow;
