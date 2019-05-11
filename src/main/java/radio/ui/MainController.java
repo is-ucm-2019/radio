@@ -68,6 +68,7 @@ public class MainController {
     }
 
     void quitEvent() {
+        core.quit();
         frame.quit();
     }
 

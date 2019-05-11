@@ -1,10 +1,11 @@
 package radio.util;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class ThemeSchedule implements Comparable<ThemeSchedule> {
+public class ThemeSchedule implements Comparable<ThemeSchedule>, Serializable {
     private BroadcastTime internal;
 
     public ThemeSchedule(LocalDate startDate, LocalDate endDate) throws IllegalArgumentException {

@@ -1,9 +1,10 @@
 package radio.core;
 
 import radio.util.BroadcastTime;
+import radio.util.PersistenceException;
 import radio.util.ThemeSchedule;
 
-import java.nio.file.Path;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -16,12 +17,12 @@ import java.util.*;
 // All data objects must be serializable, as this is how the database will
 // save the contents to disk.
 //
-// Attributes starting with _ should not be serialized to disk.
-public final class Database {
+// Attributes starting `transient` will not be serialized to disk.
+public final class Database implements Serializable {
     // Fist, all the users in the system
     // Users have no further data
     private List<User> users;
-    private Map<String, User> _userIndex;
+    transient private Map<String, User> _userIndex;
 
     // A list of all programs
     // Programs have nested broadcasts
@@ -29,37 +30,88 @@ public final class Database {
     // Program -> Broadcast
     private List<Program> programs;
     // Index for programs
-    private Map<String, Program> _programIndex;
+    transient private Map<String, Program> _programIndex;
     // Index to quickly find some specific broadcast
-    private Map<UUID, Broadcast> _broadcastIndex;
+    transient private Map<UUID, Broadcast> _broadcastIndex;
     // Reverse index of Broadcast -> Program
-    private Map<UUID, String> _programForBroadcast;
+    transient private Map<UUID, String> _programForBroadcast;
     // Additional sorted map for broadcasts
-    private TreeMap<LocalDateTime, UUID> _broadcastCalendar;
+    transient private TreeMap<LocalDateTime, UUID> _broadcastCalendar;
 
     // A list of all themes
     private List<Theme> themes;
-    private Map<String, Theme> _themeIndex;
+    transient private Map<String, Theme> _themeIndex;
 
     // Reversed of Broadcast -> Theme
-    private Map<UUID, Set<String>> _themeForBroadcast;
+    private Map<UUID, Set<String>> themeForBroadcast;
+
+    static void toDisk(Database db, String path) throws PersistenceException {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path))) {
+            out.writeObject(db);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new PersistenceException("Couldn't persist database to file");
+        }
+    }
+
+    static Optional<Database> fromDisk(String path) {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(path))) {
+            return Optional.of((Database) in.readObject());
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    // Flush all data, but skip indices (attributes marked transient)
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+    }
+
+    // Read back in data, and autopopulate indices
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        // Update indices
+        fillIndices();
+    }
 
     Database() {
         users = new ArrayList<>();
-        _userIndex = new HashMap<>();
-
         programs = new ArrayList<>();
+        themes = new ArrayList<>();
+        themeForBroadcast = new TreeMap<>();
+
+        // Update indices
+        fillIndices();
+    }
+
+    private void fillIndices() {
+        // User index
+        _userIndex = new HashMap<>();
+        for (User u : users) {
+            _userIndex.put(u.getKey(), u);
+        }
+
+        // Program and Broadcast indices
         _programIndex = new HashMap<>();
         _broadcastIndex = new TreeMap<>();
         _programForBroadcast = new TreeMap<>();
         _broadcastCalendar = new TreeMap<>();
+        for (Program p : programs) {
+            _programIndex.put(p.getKey(), p);
+            for (Broadcast b : p.getBroadcasts()) {
+                _broadcastIndex.put(b.getKey(), b);
+                _programForBroadcast.put(b.getKey(), p.getKey());
+                _broadcastCalendar.put(b.getSchedule().getStart(), b.getKey());
+            }
+        }
 
-        themes = new ArrayList<>();
+        // Theme indices
         _themeIndex = new TreeMap<>();
-        _themeForBroadcast = new TreeMap<>();
+        for (Theme t : themes) {
+            _themeIndex.put(t.getKey(), t);
+        }
     }
-
-    Database(Path path) { }
 
     public boolean programExists(String key) {
         return this._programIndex.containsKey(key);
@@ -169,7 +221,7 @@ public final class Database {
         Set<String> themes = new TreeSet<>();
         themes.add(themeName);
 
-        _themeForBroadcast.merge(broadcastKey, themes, (left, right) -> {
+        themeForBroadcast.merge(broadcastKey, themes, (left, right) -> {
             left.addAll(right);
             return left;
         });

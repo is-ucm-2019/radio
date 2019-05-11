@@ -6,11 +6,14 @@ import radio.transfer.BroadcastTransfer;
 import radio.transfer.ProgramTransfer;
 import radio.transfer.SongTransfer;
 import radio.transfer.ThemeTransfer;
+import radio.util.PersistenceException;
 
 import java.time.LocalDate;
 import java.util.*;
 
 public class Core extends Observable {
+    private static final String DB_PATH = "/tmp/db.ser";
+
     private Optional<User> currentUser = Optional.empty();
     private Database db;
     private ProgramDAO programDAO;
@@ -19,11 +22,26 @@ public class Core extends Observable {
     private SongDAO songDAO;
 
     public Core() {
-        db = new Database();
+        db = createDatabase();
         programDAO = new ProgramDAO(db);
         broadcastDAO = new BroadcastDAO(db);
         themeDAO = new ThemeDAO(db);
         songDAO = new SongDAO(db);
+    }
+
+    public void quit() {
+        try {
+            Database.toDisk(this.db, DB_PATH);
+        } catch (PersistenceException e) {
+            System.err.println(String.format("Couldn't save to %s", DB_PATH));
+        }
+    }
+
+    private Database createDatabase() {
+        return Database.fromDisk(DB_PATH).orElseGet(() -> {
+            System.err.println(String.format("Couldn't load from %s, creating new database", DB_PATH));
+            return new Database();
+        });
     }
 
     public void dispatchObserver(Observer obs) {
@@ -70,6 +88,11 @@ public class Core extends Observable {
             this.setChanged();
             this.notifyObservers(new UpdateBroadcastCalendar(tr));
         }
+    }
+
+    public void allPrograms() {
+        this.setChanged();
+        this.notifyObservers(new UpdateProgramList(this.programDAO.loadAll()));
     }
 
     public void allThemes() {

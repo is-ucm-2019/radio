@@ -1,9 +1,10 @@
 package radio.util;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
 
-public class BroadcastTime implements Comparable<BroadcastTime> {
+public class BroadcastTime implements Comparable<BroadcastTime>, Serializable {
     private AbstractMap.SimpleEntry<LocalDateTime, LocalDateTime> container;
 
     public BroadcastTime(LocalDateTime start, LocalDateTime end) throws IllegalArgumentException {
