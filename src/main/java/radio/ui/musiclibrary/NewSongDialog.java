@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class NewSongDialog extends JDialog implements IApplicationWindow, Observer {
 
@@ -82,13 +83,21 @@ public class NewSongDialog extends JDialog implements IApplicationWindow, Observ
             return;
         }
 
+        SongTransfer selected = this.matchState.get(matchIdx);
+        Function<Integer, Boolean> buyCallback = price -> {
+            String msg = String.format("You are about to buy the selected song for %d€. Are you sure?", price);
+            int chose = JOptionPane.showConfirmDialog(null, msg, "Purchase confirmation", JOptionPane.YES_NO_OPTION);
+            return chose == JOptionPane.YES_OPTION;
+        };
+
         Consumer<String> success = s -> {
             show(s);
             dispose();
         };
+
         Consumer<String> err = this::showSync;
         SwingUtilities.invokeLater(() ->
-                controller.validSong(this.matchState.get(matchIdx), success, err));
+                controller.confirmSongPurchase(selected, buyCallback, success, err));
     }
 
     /**

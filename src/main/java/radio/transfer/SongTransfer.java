@@ -31,12 +31,12 @@ public class SongTransfer {
     }
 
     public String toString() {
-        return String.format("[%s]: %s — %s — %s (%s) [%s]",
-                license.toString(),
+        return String.format("[%s] %s — %s — %s (%s) (%s)",
+                duration.toString(),
                 title,
                 author,
                 album,
                 year,
-                duration.toString());
+                license.toString());
     }
 }

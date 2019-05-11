@@ -4,6 +4,7 @@ import radio.transfer.SongTransfer;
 
 import java.util.Observer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class MusicLibraryController {
     private MainController controller;
@@ -20,7 +21,7 @@ public class MusicLibraryController {
         this.controller.core.searchSongDetails(title, author, album, year);
     }
 
-    public void validSong(SongTransfer chosen, Consumer<String> success, Consumer<String> failure) {
+    public void confirmSongPurchase(SongTransfer chosen, Function<Integer, Boolean> confirmBuy, Consumer<String> success, Consumer<String> failure) {
         if (this.controller.core.songExists(chosen)) {
             failure.accept("Chosen song already exists, please choose again");
             return;
@@ -34,8 +35,10 @@ public class MusicLibraryController {
             return;
         }
 
-        this.controller.core.saveSong(chosen);
-        success.accept(needsPayment ? String.format("Song saved. %d€ have been charged to your account", songPrice) : "Song saved succesfully");
+        if (confirmBuy.apply(songPrice)) {
+            success.accept(needsPayment ? String.format("Song saved. %d€ have been charged to your account.", songPrice) : "Song saved succesfully");
+            this.controller.core.saveSong(chosen);
+        }
     }
 
     public void addObserver(Observer o) {
