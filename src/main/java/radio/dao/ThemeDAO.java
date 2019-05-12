@@ -1,7 +1,11 @@
 package radio.dao;
 
+import radio.core.Broadcast;
 import radio.core.Database;
+import radio.core.Program;
 import radio.core.Theme;
+import radio.transfer.BroadcastTransfer;
+import radio.transfer.ProgramTransfer;
 import radio.transfer.ThemeTransfer;
 
 import java.time.LocalDate;
@@ -40,5 +44,13 @@ public class ThemeDAO implements IAppDAO<ThemeTransfer> {
     // TODO(borja): Implement
     public List<ThemeTransfer> loadForWeek(LocalDate firstOfWeek) {
         throw new UnsupportedOperationException();
+    }
+
+    public List<BroadcastTransfer> loadForTheme(ThemeTransfer tr) {
+        List<Broadcast> brs = database.forTheme(tr.name);
+        return brs.stream().map(broadcast -> {
+            Program p = database.getProgram(broadcast);
+            return new BroadcastTransfer(new ProgramTransfer(p), broadcast);
+        }).collect(Collectors.toList());
     }
 }

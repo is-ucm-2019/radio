@@ -25,7 +25,7 @@ public class Broadcast extends PersistentObject<UUID> implements Comparable<Broa
     }
 
     @Override
-    UUID getKey() {
+    public UUID getKey() {
         return key;
     }
 

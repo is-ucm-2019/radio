@@ -200,4 +200,9 @@ public class Core extends Observable {
     public void removePlaylist(PlaylistTransfer tr) {
         playlistDAO.delete(tr);
     }
+
+    public void getThemeBroadcasts(ThemeTransfer tr) {
+        this.setChanged();
+        this.notifyObservers(new ShowThemeBroadcasts(themeDAO.loadForTheme(tr)));
+    }
 }

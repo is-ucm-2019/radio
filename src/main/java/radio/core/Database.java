@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 // This class is a singleton, and the single source of truth of the system
 // Contains all the data in the system, that will be accessed through the
@@ -40,8 +41,8 @@ public final class Database implements Serializable {
     // Additional sorted map for broadcasts
     transient private TreeMap<LocalDateTime, UUID> _broadcastCalendar;
 
-    // Reversed of Broadcast -> Theme
-    private Map<UUID, Set<String>> themeForBroadcast;
+    // Reversed of Theme -> Broadcast
+    private Map<String, Set<UUID>> broadcastsForTheme;
 
     // A list of all themes
     private List<Theme> themes;
@@ -93,7 +94,7 @@ public final class Database implements Serializable {
         users = new ArrayList<>();
         programs = new ArrayList<>();
         themes = new ArrayList<>();
-        themeForBroadcast = new TreeMap<>();
+        broadcastsForTheme = new TreeMap<>();
         songs = new ArrayList<>();
         playlists = new ArrayList<>();
 
@@ -182,7 +183,8 @@ public final class Database implements Serializable {
     }
 
     public Program getProgram(Broadcast b) {
-        return _programIndex.get(_programForBroadcast.get(b.getKey()));
+        String programName = _programForBroadcast.get(b.getKey());
+        return _programIndex.get(programName);
     }
 
     public void persistBroadcast(String programTitle, Broadcast b) {
@@ -195,7 +197,7 @@ public final class Database implements Serializable {
 
     public void removeBroacast(UUID key) {
         Broadcast b = _broadcastIndex.get(key);
-        Program p =_programIndex.get(_programForBroadcast.get(b));
+        Program p = _programIndex.get(_programForBroadcast.get(b));
         p.removeBroadcast(b);
         _programForBroadcast.remove(key);
         _broadcastIndex.remove(key);
@@ -209,9 +211,16 @@ public final class Database implements Serializable {
     }
 
     public List<Broadcast> forSchedule(ThemeSchedule sched) {
-        LocalDateTime startKey = LocalDateTime.of(sched.getStart(), LocalTime.of(0,0));
+        LocalDateTime startKey = LocalDateTime.of(sched.getStart(), LocalTime.of(0, 0));
         LocalDateTime endKey = LocalDateTime.of(sched.getEnd(), LocalTime.of(23, 59));
         return forRange(startKey, endKey);
+    }
+
+    public List<Broadcast> forTheme(String themeName) {
+        return broadcastsForTheme.getOrDefault(themeName, new TreeSet<>())
+                .stream()
+                .map(bKey -> _broadcastIndex.get(bKey))
+                .collect(Collectors.toList());
     }
 
     public boolean overlapSchedule(BroadcastTime time) {
@@ -263,10 +272,10 @@ public final class Database implements Serializable {
     }
 
     public void addTheme(UUID broadcastKey, String themeName) {
-        Set<String> themes = new TreeSet<>();
-        themes.add(themeName);
+        Set<UUID> broadcasts = new TreeSet<>();
+        broadcasts.add(broadcastKey);
 
-        themeForBroadcast.merge(broadcastKey, themes, (left, right) -> {
+        broadcastsForTheme.merge(themeName, broadcasts, (left, right) -> {
             left.addAll(right);
             return left;
         });

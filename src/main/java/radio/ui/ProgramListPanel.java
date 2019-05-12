@@ -121,17 +121,6 @@ public class ProgramListPanel implements IApplicationWindow, Observer {
     private class ProgramListPopup extends MouseAdapter {
         private String itemSelected = null;
 
-        public void mouseClicked(MouseEvent e) {
-            JList owner = (JList) e.getSource();
-            if (e.getClickCount() == 2) {
-                int index = owner.locationToIndex(e.getPoint());
-                if (index >= 0) {
-                    Object o = owner.getModel().getElementAt(index);
-                    System.out.println("Double clicked on " + o.toString());
-                }
-            }
-        }
-
         public void mousePressed(MouseEvent e) {
             maybeShowPopup(e);
         }

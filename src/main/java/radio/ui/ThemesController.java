@@ -34,4 +34,8 @@ class ThemesController {
     void confirmTheme(ThemeTransfer tr, List<BroadcastTransfer> chosen) {
         this.parentController.core.confirmTheme(tr, chosen);
     }
+
+    void getBroadcasts(ThemeTransfer tr) {
+        this.parentController.core.getThemeBroadcasts(tr);
+    }
 }

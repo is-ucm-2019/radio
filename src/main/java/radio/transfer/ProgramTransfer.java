@@ -3,8 +3,6 @@ package radio.transfer;
 import radio.core.Program;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
 
 public final class ProgramTransfer {
     public final String title;

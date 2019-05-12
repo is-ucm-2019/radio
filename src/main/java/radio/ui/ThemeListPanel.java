@@ -4,14 +4,20 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import radio.actions.ChooseBroadcasts;
+import radio.actions.ShowThemeBroadcasts;
 import radio.actions.ShowThemeList;
 import radio.actions.UpdateThemeList;
+import radio.transfer.BroadcastTransfer;
 import radio.transfer.ThemeTransfer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Observable;
-import java.util.Observer;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ThemeListPanel implements IApplicationWindow, Observer {
 
@@ -23,8 +29,11 @@ public class ThemeListPanel implements IApplicationWindow, Observer {
     private JScrollPane listPane;
     private JList<String> themeListPanel;
 
+    private List<ThemeTransfer> listData = new ArrayList<>();
     private DefaultListModel<String> listModel;
     private ThemesController controller;
+
+    private JPopupMenu themePopup;
 
     ThemeListPanel(ThemesController cont) {
         this.controller = cont;
@@ -81,26 +90,43 @@ public class ThemeListPanel implements IApplicationWindow, Observer {
         if (arg instanceof UpdateThemeList) {
             updateThemeList((UpdateThemeList) arg);
         } else if (arg instanceof ChooseBroadcasts) {
-            showThemeBroadcasts((ChooseBroadcasts) arg);
+            showIncludedBroadcasts((ChooseBroadcasts) arg);
         } else if (arg instanceof ShowThemeList) {
             updateThemeList((ShowThemeList) arg);
+        } else if (arg instanceof ShowThemeBroadcasts) {
+            showThemeBroadcasts((ShowThemeBroadcasts) arg);
         }
     }
 
     private void updateThemeList(UpdateThemeList msg) {
+        listData.add(msg.tr);
         listModel.addElement(msg.tr.name);
     }
 
     private void updateThemeList(ShowThemeList msg) {
         listModel.clear();
+        listData = msg.tr;
         for (ThemeTransfer tr : msg.tr) {
             listModel.addElement(tr.name);
         }
     }
 
-    private void showThemeBroadcasts(ChooseBroadcasts msg) {
+    private void showIncludedBroadcasts(ChooseBroadcasts msg) {
         ChooseThemeBroadcastsDialog dialog = new ChooseThemeBroadcastsDialog(controller, msg.tr, msg.includedBroadcasts);
         dialog.pack();
+        dialog.setVisible(true);
+    }
+
+    private void showThemeBroadcasts(ShowThemeBroadcasts msg) {
+        if (msg.list.isEmpty()) {
+            show("This theme has no broadcasts");
+            return;
+        }
+
+        List<String> names = msg.list.stream().map(BroadcastTransfer::toString).collect(Collectors.toList());
+        ThemeBroadcastsDialog dialog = new ThemeBroadcastsDialog(names);
+        dialog.pack();
+        dialog.willShow();
         dialog.setVisible(true);
     }
 
@@ -110,11 +136,53 @@ public class ThemeListPanel implements IApplicationWindow, Observer {
     }
 
     private void createUIComponents() {
+        this.themePopup = new JPopupMenu();
+        ThemeListPopup popupAction = new ThemeListPopup();
+
+        themePopup.add(new JMenuItem("Editar Tema"));
+        themePopup.add(new JMenuItem("Eliminar Tema"));
+        JMenuItem showBroadcasts = new JMenuItem("Ver emisiones");
+        showBroadcasts.addActionListener(popupAction.innerAction(controller));
+        themePopup.add(showBroadcasts);
+
         this.listModel = new DefaultListModel<>();
         themeListPanel = new JList<>(listModel);
+        themeListPanel.addMouseListener(popupAction);
     }
 
     public void willShow() {
         SwingUtilities.invokeLater(() -> controller.getAllThemes());
+    }
+
+    private class ThemeListPopup extends MouseAdapter {
+        private ThemeTransfer itemSelected = null;
+
+        public void mousePressed(MouseEvent e) {
+            maybeShowPopup(e);
+        }
+
+        public void mouseReleased(MouseEvent e) {
+            maybeShowPopup(e);
+        }
+
+        private void maybeShowPopup(MouseEvent e) {
+            JList owner = themeListPanel;
+            boolean isTrigger = e.isPopupTrigger();
+            boolean selectedItem = !owner.isSelectionEmpty();
+            boolean bound = owner.locationToIndex(e.getPoint()) == owner.getSelectedIndex();
+
+            if (isTrigger && selectedItem && bound) {
+                int index = owner.locationToIndex(e.getPoint());
+                itemSelected = listData.get(index);
+                themePopup.show(owner, e.getX(), e.getY());
+            }
+        }
+
+        private ActionListener innerAction(ThemesController controller) {
+            return (e -> {
+                assert itemSelected != null;
+                controller.getBroadcasts(itemSelected);
+            });
+        }
     }
 }

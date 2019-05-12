@@ -6,13 +6,10 @@ import radio.core.Program;
 import radio.transfer.BroadcastTransfer;
 import radio.transfer.ProgramTransfer;
 import radio.transfer.ThemeTransfer;
-import radio.util.BroadcastTime;
 import radio.util.ThemeSchedule;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class BroadcastDAO implements IAppDAO<BroadcastTransfer> {
