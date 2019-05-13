@@ -52,17 +52,24 @@ public class Main implements Runnable {
         options.addOption("r", "run", false, "Run in standard mode");
         options.addOption("g", "generate", false, "Run in generate mode");
         options.addOption("f", "file", true, "Path to the databse file");
+        options.addOption("h", "help", false, "Display this help");
 
         try {
             line = parser.parse(options, args);
         } catch (ParseException e) {
-            System.err.println(String.format("Wrong usage: %s", e.getMessage()));
+            System.err.println(String.format("Error de uso: %s", e.getMessage()));
+            return null;
+        }
+
+        if (line.hasOption('h')) {
+            displayHelp();
             return null;
         }
 
         boolean modeOption = line.hasOption('r') || line.hasOption('g');
         if (!modeOption) {
-            System.err.println("Wrong usage: Please specify a mode");
+            System.err.println("Error de uso: Se debe especificar un modo de ejecución");
+            displayHelp();
             return null;
         }
 
@@ -82,6 +89,13 @@ public class Main implements Runnable {
         }
 
         return config;
+    }
+
+    private static void displayHelp() {
+        System.out.println("Options: [-h] -rg [-f <archivo_base_de_datos>]");
+        System.out.println("-r: Ejecuta el programa en modo GUI");
+        System.out.println("-g: Ejecuta el programa en modo generación. Creara datos aleatorios para el sistema");
+        System.out.println("-f <archivo_base_de_datos>: Una ruta a un directorio donde guardar la base de datos.");
     }
 
     private static void generateCustomData(String databasePath) {
