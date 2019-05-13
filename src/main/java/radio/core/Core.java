@@ -19,6 +19,8 @@ public class Core extends Observable {
     private ThemeDAO themeDAO;
     private SongDAO songDAO;
     private PlaylistDAO playlistDAO;
+    private AdvertiserDAO advertiserDAO;
+    private AdDAO adDAO;
 
     public Core(String databasePath) {
         dbPath = databasePath;
@@ -29,6 +31,8 @@ public class Core extends Observable {
         themeDAO = new ThemeDAO(db);
         songDAO = new SongDAO(db);
         playlistDAO = new PlaylistDAO(db);
+        advertiserDAO = new AdvertiserDAO(db);
+        adDAO = new AdDAO(db);
     }
 
     public void quit() {
@@ -204,5 +208,15 @@ public class Core extends Observable {
     public void getThemeBroadcasts(ThemeTransfer tr) {
         this.setChanged();
         this.notifyObservers(new ShowThemeBroadcasts(themeDAO.loadForTheme(tr)));
+    }
+
+    public void allAdvertisers() {
+        this.setChanged();
+        this.notifyObservers(new ShowAdvertisers(advertiserDAO.loadAll()));
+    }
+
+    public void getAdvertiserAds(AdvertiserTransfer tr) {
+        this.setChanged();
+        this.notifyObservers(new ShowAdvertiserAds(adDAO.loadFor(tr)));
     }
 }

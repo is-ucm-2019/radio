@@ -1,6 +1,7 @@
 package radio.ui;
 
 import radio.core.Core;
+import radio.ui.adverts.AdvertisingWindow;
 import radio.ui.musiclibrary.MusicLibraryWindow;
 import radio.ui.settings.SettingsDialog;
 
@@ -32,6 +33,7 @@ public class MainController {
             viewMap.put(ApplicationPanel.THEMES, new ThemeWindow(this));
             viewMap.put(ApplicationPanel.PLAYLISTS, new PlaylistWindow(this));
             viewMap.put(ApplicationPanel.MUSIC_ARCHIVE, new MusicLibraryWindow(this));
+            viewMap.put(ApplicationPanel.ADVERTISERS, new AdvertisingWindow(this));
         }
 
         return viewMap;

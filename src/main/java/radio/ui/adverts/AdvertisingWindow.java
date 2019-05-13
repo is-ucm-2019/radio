@@ -1,10 +1,16 @@
-package radio.ui;
+package radio.ui.adverts;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import radio.actions.ShowPlaylists;
-import radio.transfer.PlaylistTransfer;
+import radio.actions.ShowAdvertiserAds;
+import radio.actions.ShowAdvertisers;
+import radio.transfer.AdTransfer;
+import radio.transfer.AdvertiserTransfer;
+import radio.ui.AdvertsController;
+import radio.ui.IApplicationWindow;
+import radio.ui.MainController;
+import radio.ui.MenuPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,47 +18,41 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-public class PlaylistWindow implements IApplicationWindow, Observer {
+public class AdvertisingWindow implements IApplicationWindow, Observer {
+
     private JPanel panel1;
-    private JList<String> playlistList;
-    private JButton showSongsButton;
+    private MenuPanel menuPanel;
+    private JList advertiserList;
+    private JButton showAdvertsButton;
     private JButton editButton;
     private JButton deleteButton;
     private JButton newButton;
     private JTextField searchField;
 
-    private MenuPanel menuView;
     private MainController mainController;
-    private PlaylistController controller;
-
+    private AdvertsController controller;
     private DefaultListModel<String> listModel;
-    private List<PlaylistTransfer> playlistData;
+    private List<AdvertiserTransfer> advertiserData;
 
-    PlaylistWindow(MainController controller) {
+    public AdvertisingWindow(MainController controller) {
         this.mainController = controller;
-        this.controller = new PlaylistController(controller);
+        this.controller = new AdvertsController(controller);
         this.mainController.addObserver(this);
 
         $$$setupUI$$$();
-        deleteButton.addActionListener(e -> confirmPlaylistDeletion());
+        showAdvertsButton.addActionListener(_e -> onShow());
     }
 
-    private void confirmPlaylistDeletion() {
-        // No item selected
-        int idx = this.playlistList.getSelectedIndex();
+    // When user clicks on "show adverts"
+    private void onShow() {
+        int idx = this.advertiserList.getSelectedIndex();
         if (idx == -1) {
-            showSync("Select a playlist on the left to delete it");
+            showSync("Select an advertiser on the left to see its ads");
             return;
         }
 
-        int result = JOptionPane.showConfirmDialog(null, "Are you sure?", "Delete Playlist", JOptionPane.YES_NO_OPTION);
-        if (result == JOptionPane.NO_OPTION) {
-            return;
-        }
-
-        PlaylistTransfer tr = this.playlistData.remove(idx);
-        this.listModel.remove(idx);
-        SwingUtilities.invokeLater(() -> this.controller.deletePlaylist(tr));
+        AdvertiserTransfer tr = this.advertiserData.get(idx);
+        SwingUtilities.invokeLater(() -> this.controller.adsFor(tr));
     }
 
     /**
@@ -66,22 +66,22 @@ public class PlaylistWindow implements IApplicationWindow, Observer {
         createUIComponents();
         panel1 = new JPanel();
         panel1.setLayout(new BorderLayout(0, 0));
-        panel1.add(menuView.$$$getRootComponent$$$(), BorderLayout.NORTH);
+        panel1.add(menuPanel.$$$getRootComponent$$$(), BorderLayout.NORTH);
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new BorderLayout(0, 0));
         panel1.add(panel2, BorderLayout.CENTER);
         final JScrollPane scrollPane1 = new JScrollPane();
         panel2.add(scrollPane1, BorderLayout.CENTER);
-        scrollPane1.setViewportView(playlistList);
+        scrollPane1.setViewportView(advertiserList);
         final JPanel panel3 = new JPanel();
         panel3.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel3, BorderLayout.EAST);
         final JPanel panel4 = new JPanel();
         panel4.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel3.add(panel4, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        showSongsButton = new JButton();
-        showSongsButton.setText("Ver Canciones");
-        panel4.add(showSongsButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        showAdvertsButton = new JButton();
+        showAdvertsButton.setText("Ver Anuncios");
+        panel4.add(showAdvertsButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         editButton = new JButton();
         editButton.setText("Editar");
         panel4.add(editButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -106,6 +106,13 @@ public class PlaylistWindow implements IApplicationWindow, Observer {
         panel6.add(searchField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
     }
 
+    private void createUIComponents() {
+        this.menuPanel = new MenuPanel(mainController);
+        this.listModel = new DefaultListModel<>();
+        advertiserList = new JList<>(listModel);
+        advertiserList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
+
     /**
      * @noinspection ALL
      */
@@ -113,11 +120,31 @@ public class PlaylistWindow implements IApplicationWindow, Observer {
         return panel1;
     }
 
-    private void createUIComponents() {
-        this.menuView = new MenuPanel(mainController);
-        this.listModel = new DefaultListModel<>();
-        playlistList = new JList<>(listModel);
-        playlistList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg instanceof ShowAdvertisers) {
+            populateData(((ShowAdvertisers) arg).list);
+        } else if (arg instanceof ShowAdvertiserAds) {
+            showAds(((ShowAdvertiserAds) arg).list);
+        }
+    }
+
+    private void populateData(List<AdvertiserTransfer> list) {
+        this.listModel.clear();
+        this.advertiserData = list;
+        for (AdvertiserTransfer tr : list) {
+            this.listModel.addElement(tr.toString());
+        }
+    }
+
+    private void showAds(List<AdTransfer> list) {
+        if (list.isEmpty()) {
+            show("This advertiser has no ads");
+            return;
+        }
+
+        // TODO(borja): Implement window for ads
+        show("Will show ads for");
     }
 
     @Override
@@ -127,21 +154,6 @@ public class PlaylistWindow implements IApplicationWindow, Observer {
 
     @Override
     public void willShow() {
-        this.controller.getAllPlaylists();
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        if (arg instanceof ShowPlaylists) {
-            populateData(((ShowPlaylists) arg).list);
-        }
-    }
-
-    private void populateData(List<PlaylistTransfer> list) {
-        this.listModel.clear();
-        this.playlistData = list;
-        for (PlaylistTransfer tr : list) {
-            this.listModel.addElement(tr.toString());
-        }
+        this.controller.getAllAdvertisers();
     }
 }
