@@ -6,7 +6,10 @@ import radio.transfer.*;
 import radio.util.PersistenceException;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Optional;
 
 public class Core extends Observable {
     private String dbPath;
@@ -217,6 +220,14 @@ public class Core extends Observable {
 
     public void getAdvertiserAds(AdvertiserTransfer tr) {
         this.setChanged();
-        this.notifyObservers(new ShowAdvertiserAds(adDAO.loadFor(tr)));
+        this.notifyObservers(new ShowAdvertiserAds(tr.name, adDAO.loadFor(tr)));
+    }
+
+    public boolean adExists(AdTransfer tr) {
+        return this.adDAO.exists(tr);
+    }
+
+    public void addAdvert(AdTransfer tr) {
+        this.adDAO.persist(tr);
     }
 }

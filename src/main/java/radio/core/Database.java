@@ -59,6 +59,11 @@ public final class Database implements Serializable {
     transient private Map<String, Playlist> _playlistIndex;
     transient private Map<SongKey, String> _playlistForSong;
 
+    // Direct mapping of advertiser maps to advertisers
+    private Map<String, Advertiser> advertisers;
+    // Unique mapping of programs to a set of ads names
+    transient Map<String, Set<String>> _uniqueAdIndex;
+
     public static void toDisk(Database db, String path) throws PersistenceException {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path))) {
             out.writeObject(db);
@@ -97,6 +102,7 @@ public final class Database implements Serializable {
         broadcastsForTheme = new TreeMap<>();
         songs = new ArrayList<>();
         playlists = new ArrayList<>();
+        advertisers = new TreeMap<>();
 
         // Update indices
         fillIndices();
@@ -142,6 +148,20 @@ public final class Database implements Serializable {
             _playlistIndex.put(p.getKey(), p);
             for (Song s : p.getSongs()) {
                 _playlistForSong.put(s.getKey(), p.getKey());
+            }
+        }
+
+        // Advertiser index
+        _uniqueAdIndex = new TreeMap<>();
+        for (Map.Entry<String, Advertiser> entry : advertisers.entrySet()) {
+            for (Ad a : entry.getValue().getAds()) {
+                TreeSet<String> set = new TreeSet<>();
+                set.add(a.getKey());
+
+                _uniqueAdIndex.merge(entry.getKey(), set, (left, right) -> {
+                    left.addAll(right);
+                    return left;
+                });
             }
         }
     }
@@ -324,5 +344,45 @@ public final class Database implements Serializable {
 
     public List<Playlist> getPlaylists() {
         return playlists;
+    }
+
+    public boolean advertiserExists(String name) {
+        return advertisers.containsKey(name);
+    }
+
+    public void persistAdvertiser(Advertiser a) {
+        this.advertisers.put(a.getKey(), a);
+        _uniqueAdIndex.put(a.getKey(), new TreeSet<>());
+    }
+
+    public void removeAdvertiser(String name) {
+        advertisers.remove(name);
+    }
+
+    public List<Advertiser> getAdvertisers() {
+        return new ArrayList<>(advertisers.values());
+    }
+
+    // Ad names are unique per-advertiser
+    public boolean advertExists(String advertiserName, String adName) {
+        Set<String> adSet = _uniqueAdIndex.getOrDefault(advertiserName, null);
+        if (adSet == null) {
+            return false;
+        }
+
+        return adSet.contains(adName);
+    }
+
+    public void persistAdvert(String advertiserName, Ad advert) {
+        Advertiser advertiser = advertisers.get(advertiserName);
+        advertiser.addAdvert(advert);
+        _uniqueAdIndex.compute(advertiserName, (k, v) -> {
+            v.add(advert.getKey());
+            return v;
+        });
+    }
+
+    public List<Ad> forAdvertiser(String advertiserName) {
+        return advertisers.get(advertiserName).getAds();
     }
 }

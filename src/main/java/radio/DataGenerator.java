@@ -20,6 +20,7 @@ class DataGenerator {
         fillPrograms(db);
         fillThemes(db);
         fillPlaylistsAndSongs(db);
+        fillAdvertisers(db);
     }
 
     private static void fillBankingInfo(Database db) {
@@ -61,7 +62,7 @@ class DataGenerator {
     private static void fillThemes(Database db) {
         for (int i = 0; i < 5; i++) {
             ThemeSchedule sched = new ThemeSchedule(LocalDate.of(2019, 6 + i, 1),
-                                                    LocalDate.of(2019, 7 + i, 1));
+                    LocalDate.of(2019, 7 + i, 1));
 
             String name = String.format("Theme %s", i);
             String descr = String.format("Description for %s", name);
@@ -92,6 +93,22 @@ class DataGenerator {
 
         for (Playlist p : playlists) {
             db.persistPlaylist(p);
+        }
+    }
+
+    private static void fillAdvertisers(Database db) {
+        for (int i = 0; i < 10; i++) {
+            String name = String.format("Advertiser %s", i);
+            String description = String.format("Description for %s", name);
+            String email = String.format("advertiser_%s@example.org", i);
+            String phone = "+1 555-555";
+            db.persistAdvertiser(new Advertiser(name, phone, email, description));
+            for (int j = 0; j < 5; j++) {
+                String adName = String.format("Ad %s%s", i, j);
+                description = String.format("Description for %s", adName);
+                String category = "ad";
+                db.persistAdvert(name, new Ad(adName, description, category));
+            }
         }
     }
 }

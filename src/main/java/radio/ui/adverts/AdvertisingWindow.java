@@ -7,16 +7,14 @@ import radio.actions.ShowAdvertiserAds;
 import radio.actions.ShowAdvertisers;
 import radio.transfer.AdTransfer;
 import radio.transfer.AdvertiserTransfer;
-import radio.ui.AdvertsController;
-import radio.ui.IApplicationWindow;
-import radio.ui.MainController;
-import radio.ui.MenuPanel;
+import radio.ui.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.stream.Collectors;
 
 public class AdvertisingWindow implements IApplicationWindow, Observer {
 
@@ -28,6 +26,7 @@ public class AdvertisingWindow implements IApplicationWindow, Observer {
     private JButton deleteButton;
     private JButton newButton;
     private JTextField searchField;
+    private JButton addAdvertButtonButton;
 
     private MainController mainController;
     private AdvertsController controller;
@@ -40,7 +39,23 @@ public class AdvertisingWindow implements IApplicationWindow, Observer {
         this.mainController.addObserver(this);
 
         $$$setupUI$$$();
+        addAdvertButtonButton.addActionListener(_e -> onNewAd());
         showAdvertsButton.addActionListener(_e -> onShow());
+    }
+
+    // When user clicks on "add advert"
+    private void onNewAd() {
+        int idx = this.advertiserList.getSelectedIndex();
+        if (idx == -1) {
+            showSync("Select an advertiser on the left to create a new ad");
+            return;
+        }
+
+        AdvertiserTransfer tr = this.advertiserData.get(idx);
+        NewAdDialog dialog = new NewAdDialog(tr, this.controller);
+        dialog.pack();
+        dialog.willShow();
+        dialog.setVisible(true);
     }
 
     // When user clicks on "show adverts"
@@ -77,17 +92,20 @@ public class AdvertisingWindow implements IApplicationWindow, Observer {
         panel3.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel3, BorderLayout.EAST);
         final JPanel panel4 = new JPanel();
-        panel4.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel4.setLayout(new GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel3.add(panel4, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         showAdvertsButton = new JButton();
         showAdvertsButton.setText("Ver Anuncios");
-        panel4.add(showAdvertsButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel4.add(showAdvertsButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         editButton = new JButton();
         editButton.setText("Editar");
-        panel4.add(editButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel4.add(editButton, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         deleteButton = new JButton();
         deleteButton.setText("Eliminar");
-        panel4.add(deleteButton, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel4.add(deleteButton, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        addAdvertButtonButton = new JButton();
+        addAdvertButtonButton.setText("Añadir Anuncio");
+        panel4.add(addAdvertButtonButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         panel3.add(spacer1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         final JPanel panel5 = new JPanel();
@@ -106,13 +124,6 @@ public class AdvertisingWindow implements IApplicationWindow, Observer {
         panel6.add(searchField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
     }
 
-    private void createUIComponents() {
-        this.menuPanel = new MenuPanel(mainController);
-        this.listModel = new DefaultListModel<>();
-        advertiserList = new JList<>(listModel);
-        advertiserList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    }
-
     /**
      * @noinspection ALL
      */
@@ -120,12 +131,20 @@ public class AdvertisingWindow implements IApplicationWindow, Observer {
         return panel1;
     }
 
+    private void createUIComponents() {
+        this.menuPanel = new MenuPanel(mainController);
+        this.listModel = new DefaultListModel<>();
+        advertiserList = new JList<>(listModel);
+        advertiserList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         if (arg instanceof ShowAdvertisers) {
             populateData(((ShowAdvertisers) arg).list);
         } else if (arg instanceof ShowAdvertiserAds) {
-            showAds(((ShowAdvertiserAds) arg).list);
+            ShowAdvertiserAds showAds = (ShowAdvertiserAds) arg;
+            showAds(showAds.advertiserName, showAds.list);
         }
     }
 
@@ -137,14 +156,17 @@ public class AdvertisingWindow implements IApplicationWindow, Observer {
         }
     }
 
-    private void showAds(List<AdTransfer> list) {
+    private void showAds(String forAdvertiser, List<AdTransfer> list) {
         if (list.isEmpty()) {
             show("This advertiser has no ads");
             return;
         }
 
-        // TODO(borja): Implement window for ads
-        show("Will show ads for");
+        List<String> names = list.stream().map(AdTransfer::toString).collect(Collectors.toList());
+        AdvertisetAdsDialog dialog = new AdvertisetAdsDialog(String.format("Ads for %s", forAdvertiser), names);
+        dialog.pack();
+        dialog.willShow();
+        dialog.setVisible(true);
     }
 
     @Override
